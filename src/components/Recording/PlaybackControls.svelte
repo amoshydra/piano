@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentRecording, isPlaying } from '$lib/store';
+	import { currentRecording, isPlaying, currentPlayingRecordingId } from '$lib/store';
 	import { audioEngine } from '$lib/audio';
 	import type { Recording, Note } from '$lib/store';
 
@@ -20,12 +20,13 @@
 	async function playRecording(): Promise<void> {
 		if (!recording || !recording.notes || recording.notes.length === 0) return;
 
-		if ($isPlaying) {
+		if ($isPlaying && $currentPlayingRecordingId === recording.id) {
 			stopPlayback();
 			return;
 		}
 
 		await audioEngine.resume();
+		currentPlayingRecordingId.set(recording.id);
 		isPlaying.set(true);
 
 		recording.notes.forEach((note: Note) => {
@@ -49,12 +50,14 @@
 		if (playbackTimeout) {
 			setTimeout(() => {
 				isPlaying.set(false);
+				currentPlayingRecordingId.set(null);
 			}, recording.duration);
 		}
 	}
 
 	function stopPlayback(): void {
 		isPlaying.set(false);
+		currentPlayingRecordingId.set(null);
 		if (playbackTimeout) {
 			clearTimeout(playbackTimeout);
 			playbackTimeout = null;
@@ -64,12 +67,16 @@
 
 <div class="playback-controls">
 	<button
-		class="play-button {$isPlaying ? 'playing' : ''}"
+		class="play-button {$isPlaying && recording && $currentPlayingRecordingId === recording.id
+			? 'playing'
+			: ''}"
 		onclick={playRecording}
-		aria-label={$isPlaying ? 'Stop playback' : 'Play recording'}
-		aria-pressed={$isPlaying}
+		aria-label={$isPlaying && recording && $currentPlayingRecordingId === recording.id
+			? 'Stop playback'
+			: 'Play recording'}
+		aria-pressed={$isPlaying && recording && $currentPlayingRecordingId === recording.id}
 	>
-		{#if $isPlaying}
+		{#if $isPlaying && recording && $currentPlayingRecordingId === recording.id}
 			<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
 				<rect x="6" y="4" width="4" height="16" rx="1" />
 				<rect x="14" y="4" width="4" height="16" rx="1" />

@@ -29,6 +29,8 @@ export const currentRecording: Writable<Recording | null> = writable(null);
 
 export const isPlaying: Writable<boolean> = writable(false);
 
+export const currentPlayingRecordingId: Writable<string | null> = writable(null);
+
 export const volume: Writable<number> = writable(0.2);
 
 export const scale: Writable<number> = writable(1);
