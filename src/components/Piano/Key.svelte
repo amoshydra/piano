@@ -82,7 +82,7 @@
 		user-select: none;
 		height: 20em;
 		width: var(--key-width);
-		transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+		/* transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1); */
 		touch-action: none;
 		position: relative;
 	}
@@ -166,7 +166,7 @@
 			0 6px 12px rgba(0, 0, 0, 0.3),
 			inset 0 -2px 4px rgba(0, 0, 0, 0.2),
 			inset 0 1px 2px rgba(255, 255, 255, 0.1);
-		transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+		transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.black-key::before {

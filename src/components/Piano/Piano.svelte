@@ -31,6 +31,10 @@
 		if (keyIndex < 0) return;
 
 		// Prevent default behavior for all valid piano keys to avoid browser interference
+		if (e.ctrlKey || e.metaKey || e.altKey) {
+			return;
+		}
+
 		e.preventDefault();
 
 		const key = keys[keyIndex];
@@ -106,7 +110,7 @@
 		position: relative;
 		background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
 		border-radius: 8px;
-		padding: 1rem;
+		padding: clamp(0.25rem, 1.5vw, 0.75rem);
 		width: 100%;
 		box-shadow:
 			0 8px 32px rgba(0, 0, 0, 0.4),

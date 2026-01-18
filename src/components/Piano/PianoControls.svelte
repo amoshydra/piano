@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { scale } from '$lib/store';
+	import { onMount } from 'svelte';
 
 	let currentScale = $state(1);
+	let isFullscreen = $state(false);
 
 	$effect(() => {
 		scale.set(currentScale);
@@ -11,6 +13,27 @@
 		const target = e.target as HTMLInputElement;
 		currentScale = parseFloat(target.value);
 	}
+
+	function toggleFullscreen(): void {
+		if (!document.fullscreenElement) {
+			document.documentElement.requestFullscreen().catch((err) => {
+				console.error('Fullscreen error:', err);
+			});
+		} else {
+			document.exitFullscreen();
+		}
+	}
+
+	function handleFullscreenChange(): void {
+		isFullscreen = !!document.fullscreenElement;
+	}
+
+	onMount(() => {
+		document.addEventListener('fullscreenchange', handleFullscreenChange);
+		return () => {
+			document.removeEventListener('fullscreenchange', handleFullscreenChange);
+		};
+	});
 </script>
 
 <div class="controls">
@@ -42,6 +65,40 @@
 		/>
 		<span class="scale-value">{Math.round(currentScale * 100)}%</span>
 	</div>
+	<button
+		class="fullscreen-button"
+		onclick={toggleFullscreen}
+		aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+		aria-pressed={isFullscreen}
+	>
+		{#if isFullscreen}
+			<svg
+				width="20"
+				height="20"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+			>
+				<path
+					d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"
+				/>
+			</svg>
+		{:else}
+			<svg
+				width="20"
+				height="20"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+			>
+				<path
+					d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+				/>
+			</svg>
+		{/if}
+	</button>
 </div>
 
 <style>
@@ -50,7 +107,35 @@
 		gap: 1rem;
 		justify-content: center;
 		align-items: center;
-		flex-wrap: wrap;
+	}
+
+	.fullscreen-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, 0.15);
+		backdrop-filter: blur(20px);
+		border: 2px solid rgba(255, 255, 255, 0.3);
+		border-radius: 50%;
+		width: 48px;
+		height: 48px;
+		color: white;
+		cursor: pointer;
+		box-shadow:
+			0 8px 32px rgba(0, 0, 0, 0.2),
+			0 2px 8px rgba(0, 0, 0, 0.1),
+			inset 0 1px 2px rgba(255, 255, 255, 0.2);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.fullscreen-button:hover {
+		background: rgba(255, 255, 255, 0.25);
+		border-color: rgba(255, 255, 255, 0.5);
+		transform: translateY(-2px);
+		box-shadow:
+			0 12px 40px rgba(0, 0, 0, 0.25),
+			0 4px 12px rgba(0, 0, 0, 0.15),
+			inset 0 1px 2px rgba(255, 255, 255, 0.3);
 	}
 
 	.control-group {
@@ -92,7 +177,6 @@
 	input[type='range'] {
 		-webkit-appearance: none;
 		appearance: none;
-		width: 100%;
 		height: 6px;
 		background: rgba(255, 255, 255, 0.3);
 		border-radius: 3px;
@@ -143,16 +227,8 @@
 	}
 
 	@media (max-width: 768px) {
-		.controls {
-			justify-content: center;
-		}
-
 		.control-group {
 			padding: 0.625rem 0.875rem;
-		}
-
-		input[type='range'] {
-			width: 200px;
 		}
 
 		.scale-value {
@@ -161,19 +237,10 @@
 	}
 
 	@media (max-width: 480px) {
-		.controls {
-			width: 100%;
-		}
-
 		.control-group {
 			width: 100%;
 			justify-content: space-between;
 			padding: 0.5rem 0.75rem;
-		}
-
-		input[type='range'] {
-			width: 120px;
-			height: 5px;
 		}
 
 		input[type='range']::-webkit-slider-thumb {
@@ -196,6 +263,13 @@
 		.scale-value {
 			font-size: 0.75rem;
 			min-width: 40px;
+		}
+
+		.fullscreen-button {
+			width: 40px;
+			height: 40px;
+			min-width: 40px;
+			min-height: 40px;
 		}
 	}
 </style>
