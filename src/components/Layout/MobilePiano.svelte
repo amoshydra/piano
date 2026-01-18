@@ -17,34 +17,6 @@
 			<RecordingList />
 		</section>
 	</main>
-
-	<header class="header">
-		<div class="header-content">
-			<div class="logo">
-				<svg
-					width="48"
-					height="48"
-					viewBox="0 0 24 24"
-					fill="none"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<rect x="2" y="2" width="20" height="20" rx="2" fill="white" fill-opacity="0.2" />
-					<rect x="4" y="4" width="3" height="14" rx="0.5" fill="white" />
-					<rect x="8" y="4" width="3" height="14" rx="0.5" fill="white" />
-					<rect x="12" y="4" width="3" height="14" rx="0.5" fill="white" />
-					<rect x="16" y="4" width="4" height="14" rx="0.5" fill="white" />
-					<rect x="5" y="18" width="2" height="2" fill="white" fill-opacity="0.5" />
-					<rect x="9" y="18" width="2" height="2" fill="white" fill-opacity="0.5" />
-					<rect x="13" y="18" width="2" height="2" fill="white" fill-opacity="0.5" />
-				</svg>
-			</div>
-			<h1>Piano</h1>
-		</div>
-	</header>
-
-	<footer class="footer">
-		<p>Tap keys or use keyboard shortcuts to play</p>
-	</footer>
 </div>
 
 <style>
@@ -81,39 +53,6 @@
 		min-height: 100dvh;
 	}
 
-	.header {
-		text-align: center;
-		margin-bottom: 2rem;
-		position: relative;
-		z-index: 1;
-	}
-
-	.header-content {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 1rem;
-	}
-
-	.logo {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.header h1 {
-		color: white;
-		font-size: 2.5rem;
-		font-weight: 700;
-		margin: 0;
-		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-		letter-spacing: -0.5px;
-		background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-	}
-
 	.main {
 		display: flex;
 		flex-direction: column;
@@ -134,33 +73,19 @@
 	}
 
 	.recordings-section {
-		background: rgba(255, 255, 255, 0.95);
-		background: none;
-		backdrop-filter: blur(20px);
+		background: rgba(255, 255, 255, 0.12);
+		backdrop-filter: blur(24px);
+		-webkit-backdrop-filter: blur(24px);
 		border-radius: 20px;
-		padding: 0.5rem;
+		padding: 1.5rem;
 		box-shadow:
 			0 20px 40px rgba(0, 0, 0, 0.15),
-			0 8px 16px rgba(0, 0, 0, 0.1);
-		border: 1px solid rgba(255, 255, 255, 0.3);
+			0 8px 16px rgba(0, 0, 0, 0.1),
+			inset 0 1px 2px rgba(255, 255, 255, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.25);
 		display: flex;
 		justify-items: auto;
 		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	.footer {
-		text-align: center;
-		margin-top: 2rem;
-		padding: 1rem;
-		position: relative;
-		z-index: 1;
-	}
-
-	.footer p {
-		color: rgba(255, 255, 255, 0.8);
-		font-size: 0.875rem;
-		margin: 0;
-		font-weight: 500;
+		gap: 1rem;
 	}
 </style>

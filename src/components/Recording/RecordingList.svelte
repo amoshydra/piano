@@ -115,23 +115,29 @@
 		align-items: center;
 		gap: 0.75rem;
 		padding: 1rem 1.25rem;
-		background: rgba(0, 0, 0, 0.03);
-		border: 2px solid rgba(0, 0, 0, 0.08);
+		background: rgba(255, 255, 255, 0.15);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		border: 2px solid rgba(255, 255, 255, 0.3);
 		border-radius: 12px;
 		cursor: pointer;
 		font-weight: 600;
 		font-size: 1rem;
-		color: #1a1a2e;
+		color: white;
 		text-align: left;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+		box-shadow:
+			0 2px 8px rgba(0, 0, 0, 0.05),
+			inset 0 1px 2px rgba(255, 255, 255, 0.1);
 	}
 
 	.toggle-button:hover {
-		background: rgba(0, 0, 0, 0.05);
-		border-color: rgba(0, 0, 0, 0.12);
+		background: rgba(255, 255, 255, 0.25);
+		border-color: rgba(255, 255, 255, 0.4);
 		transform: translateY(-1px);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+		box-shadow:
+			0 4px 12px rgba(0, 0, 0, 0.08),
+			inset 0 1px 2px rgba(255, 255, 255, 0.15);
 	}
 
 	.toggle-button:active {
@@ -165,9 +171,12 @@
 	.no-recordings {
 		text-align: center;
 		padding: 3rem 2rem;
-		background: rgba(0, 0, 0, 0.02);
+		background: rgba(255, 255, 255, 0.08);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
 		border-radius: 12px;
-		border: 2px dashed rgba(0, 0, 0, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05);
 	}
 
 	.no-recordings-icon {
@@ -179,13 +188,13 @@
 	.no-recordings-text {
 		font-size: 1.125rem;
 		font-weight: 600;
-		color: #1a1a2e;
+		color: white;
 		margin: 0 0 0.5rem 0;
 	}
 
 	.no-recordings-subtext {
 		font-size: 0.875rem;
-		color: #666;
+		color: rgba(255, 255, 255, 0.8);
 		margin: 0;
 	}
 
@@ -196,18 +205,25 @@
 	}
 
 	.recording-card {
-		background: white;
-		border: 1px solid rgba(0, 0, 0, 0.08);
+		background: rgba(255, 255, 255, 0.15);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		border: 1px solid rgba(255, 255, 255, 0.2);
 		border-radius: 12px;
 		padding: 1rem;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+		box-shadow:
+			0 2px 8px rgba(0, 0, 0, 0.05),
+			inset 0 1px 2px rgba(255, 255, 255, 0.1);
 	}
 
 	.recording-card:hover {
+		background: rgba(255, 255, 255, 0.25);
+		border-color: rgba(255, 255, 255, 0.3);
 		transform: translateY(-2px);
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-		border-color: rgba(102, 126, 234, 0.2);
+		box-shadow:
+			0 8px 24px rgba(0, 0, 0, 0.12),
+			inset 0 1px 2px rgba(255, 255, 255, 0.15);
 	}
 
 	.recording-header {
@@ -236,7 +252,7 @@
 	.recording-name {
 		font-size: 1rem;
 		font-weight: 600;
-		color: #1a1a2e;
+		color: white;
 		margin: 0 0 0.375rem 0;
 		letter-spacing: -0.25px;
 		overflow: hidden;
@@ -248,7 +264,7 @@
 		display: flex;
 		gap: 0.75rem;
 		font-size: 0.8125rem;
-		color: #666;
+		color: rgba(255, 255, 255, 0.7);
 		flex-wrap: wrap;
 	}
 
