@@ -1,6 +1,6 @@
-import { writable, get } from 'svelte/store';
+import { get } from 'svelte/store';
 import type { Note, Recording } from './store';
-import { notes, isRecording, currentRecording, recordings } from './store';
+import { isRecording, currentRecording, recordings } from './store';
 
 let recordingStartTime: number = 0;
 let recordingNotes: Note[] = [];

@@ -41,8 +41,11 @@ export const hasRecordings = derived(recordings, ($recordings) => {
 	return $recordings.length > 0;
 });
 
-export const playbackProgress = derived(currentRecording, isPlaying, ($currentRecording, $isPlaying) => {
-	if (!$currentRecording || !$isPlaying) return 0;
-	const now = Date.now();
-	return Math.min(1, (now - $currentRecording.startTime) / $currentRecording.duration);
-});
+export const playbackProgress = derived(
+	[currentRecording, isPlaying],
+	([$currentRecording, $isPlaying]) => {
+		if (!$currentRecording || !$isPlaying) return 0;
+		const now = Date.now();
+		return Math.min(1, (now - $currentRecording.startTime) / $currentRecording.duration);
+	}
+);

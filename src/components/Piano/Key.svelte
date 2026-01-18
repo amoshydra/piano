@@ -1,31 +1,17 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { audioEngine } from '$lib/audio';
-	import { activeNotes } from '$lib/store';
 
 	interface Props {
 		note: string;
 		octave: number;
 		color: 'white' | 'black';
-		key: string;
 		index: number;
 		width?: string;
 	}
 
-	let {
-		note,
-		octave,
-		color,
-		key,
-		index,
-		width = '2rem'
-	}: Props = $props();
+	let { note, octave, color, index, width = '2rem' }: Props = $props();
 
-	let dispatch: ((event: 'note', detail: { note: string; octave: number; frequency: number; id: string }) => void) &
-		((event: 'noteEnd', detail: { note: string; octave: number; frequency: number; id: string }) => void) &
-		((event: string, detail: any) => void) = (event, detail) => {
-			element?.dispatchEvent(new CustomEvent(event, { detail, bubbles: true }));
-		};
 	let element: HTMLDivElement;
 	let isActive = $state(false);
 
@@ -51,16 +37,16 @@
 		e.preventDefault();
 		const touch = e.touches[0];
 		if (touch && element.contains(touch.target as Node)) {
-			handlePointerDown(e as any);
+			handlePointerDown();
 		}
 	}
 
 	function handleTouchEnd(e: TouchEvent): void {
 		e.preventDefault();
-		handlePointerUp(e as any);
+		handlePointerUp();
 	}
 
-	function handlePointerDown(e: PointerEvent | TouchEvent): void {
+	function handlePointerDown(): void {
 		if (isActive) return;
 		isActive = true;
 
@@ -69,37 +55,17 @@
 
 		audioEngine.playNote(frequency, id);
 
-		activeNotes.update((set) => {
-			const newSet = new Set(set);
-			newSet.add(id);
-			return newSet;
-		});
-
-		dispatch('note', { note, octave, frequency, id });
-
 		setTimeout(() => {
 			isActive = false;
-			activeNotes.update((set) => {
-				const newSet = new Set(set);
-				newSet.delete(id);
-				return newSet;
-			});
 			audioEngine.stopNote(id);
-			dispatch('noteEnd', { note, octave, frequency, id });
 		}, 500);
 	}
 
-	function handlePointerUp(e: PointerEvent | TouchEvent): void {
+	function handlePointerUp(): void {
 		const id = `${note}${octave}-${index}`;
 		if (isActive) {
 			isActive = false;
-			activeNotes.update((set) => {
-				const newSet = new Set(set);
-				newSet.delete(id);
-				return newSet;
-			});
 			audioEngine.stopNote(id);
-			dispatch('noteEnd', { note, octave, frequency: audioEngine.getFrequency(note, octave), id });
 		}
 	}
 </script>

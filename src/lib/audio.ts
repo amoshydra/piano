@@ -5,7 +5,7 @@ export class AudioEngine {
 	private volume: number = 0.2;
 
 	constructor() {
-		this.context = new (window.AudioContext || (window as any).webkitAudioContext)();
+		this.context = new (window.AudioContext || window.webkitAudioContext)();
 		this.masterGain = this.context.createGain();
 		this.masterGain.gain.value = this.volume;
 		this.masterGain.connect(this.context.destination);
@@ -31,14 +31,8 @@ export class AudioEngine {
 		oscillator.frequency.setValueAtTime(frequency, this.context.currentTime);
 
 		gainNode.gain.setValueAtTime(this.volume, this.context.currentTime);
-		gainNode.gain.exponentialRampToValueAtTime(
-			this.volume * 0.5,
-			this.context.currentTime + 0.01
-		);
-		gainNode.gain.exponentialRampToValueAtTime(
-			0.0001,
-			this.context.currentTime + 1
-		);
+		gainNode.gain.exponentialRampToValueAtTime(this.volume * 0.5, this.context.currentTime + 0.01);
+		gainNode.gain.exponentialRampToValueAtTime(0.0001, this.context.currentTime + 1);
 
 		oscillator.connect(gainNode);
 		gainNode.connect(this.masterGain);
