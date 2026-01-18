@@ -52,13 +52,13 @@
 		e.preventDefault();
 		const touch = e.touches[0];
 		if (touch && element.contains(touch.target as Node)) {
-			handlePointerDown();
+			onPointerDown?.();
 		}
 	}
 
 	function handleTouchEnd(e: TouchEvent): void {
 		e.preventDefault();
-		handlePointerUp();
+		onPointerUp?.();
 	}
 
 	function handlePointerDown(): void {
@@ -74,9 +74,9 @@
 	bind:this={element}
 	class="key {color}-key {isActive ? 'active' : ''}"
 	style="--key-width: {width}"
-	onpointerdown={handlePointerDown}
-	onpointerup={handlePointerUp}
-	onpointerleave={handlePointerUp}
+	onpointerdown={onPointerDown}
+	onpointerup={onPointerUp}
+	onpointerleave={onPointerUp}
 	ontouchstart={handleTouchStart}
 	ontouchend={handleTouchEnd}
 	role="button"
@@ -220,11 +220,11 @@
 	}
 
 	@media (hover: hover) {
-		.white-key:hover {
+		.white-key:not(.active):hover {
 			background: linear-gradient(180deg, #fafafa 0%, #f0f0f0 50%, #e3e3e3 100%);
 		}
 
-		.black-key:hover::after {
+		.black-key:not(.active):hover::after {
 			background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 50%, #2a2a2a 100%);
 		}
 	}

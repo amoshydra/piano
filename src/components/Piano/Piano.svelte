@@ -9,7 +9,11 @@
 
 	let { keys = defaultKeys, keyWidth = '2rem' } = $props();
 
-	let activeKeys = $state(new Set<string>());
+	let activeKeysArray = $state<string[]>([]);
+
+	function isKeyActive(key: PianoKey, index: number): boolean {
+		return activeKeysArray.includes(getKeyId(key, index));
+	}
 
 	onMount(() => {
 		audioEngine.resume();
@@ -26,10 +30,13 @@
 		const keyIndex = findKeyByKeyCode(e.key, keys);
 		if (keyIndex < 0) return;
 
+		// Prevent default behavior for all valid piano keys to avoid browser interference
+		e.preventDefault();
+
 		const key = keys[keyIndex];
 		const id = getKeyId(key, keyIndex);
 
-		if (activeKeys.has(id)) return;
+		if (activeKeysArray.includes(id)) return;
 
 		playNote(keyIndex, key, id);
 	}
@@ -45,7 +52,7 @@
 	}
 
 	function playNote(keyIndex: number, key: PianoKey, id: string): void {
-		activeKeys.add(id);
+		activeKeysArray = [...activeKeysArray, id];
 
 		const frequency = audioEngine.getFrequencyByIndex(keyIndex, keys);
 		audioEngine.playNote(frequency, id);
@@ -56,7 +63,7 @@
 	}
 
 	function stopNote(id: string): void {
-		activeKeys.delete(id);
+		activeKeysArray = activeKeysArray.filter((keyId) => keyId !== id);
 		audioEngine.stopNote(id);
 	}
 </script>
@@ -74,7 +81,7 @@
 						{index}
 						{keys}
 						width={keyWidth}
-						isActive={activeKeys.has(getKeyId(key, index))}
+						isActive={isKeyActive(key, index)}
 						onPointerDown={() => playNote(index, key, getKeyId(key, index))}
 						onPointerUp={() => stopNote(getKeyId(key, index))}
 					/>
