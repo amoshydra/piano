@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { audioEngine } from '$lib/audio';
+	import { onMount } from 'svelte';
 
 	interface Props {
 		note: string;
@@ -123,7 +123,6 @@
 		justify-content: center;
 		align-items: flex-end;
 		color: #1a1a2e;
-		border: 1px solid #d0d0d0;
 		border-radius: 0 0 6px 6px;
 		box-shadow:
 			0 4px 8px rgba(0, 0, 0, 0.15),
@@ -164,6 +163,7 @@
 		border: none;
 	}
 
+	.black-key::after,
 	.black-key::before {
 		content: '';
 		position: absolute;
@@ -175,9 +175,6 @@
 		width: calc(0.8 * var(--key-width));
 		height: 6.5rem;
 		border-radius: 0 0 4px 4px;
-		border: 2px solid white;
-		border-top: 1px solid black;
-		border-bottom: none;
 		box-shadow:
 			0 6px 12px rgba(0, 0, 0, 0.3),
 			inset 0 -2px 4px rgba(0, 0, 0, 0.2),
@@ -185,25 +182,15 @@
 		transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
-	.black-key::after {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: linear-gradient(
-			135deg,
-			rgba(255, 255, 255, 0.15) 0%,
-			rgba(255, 255, 255, 0) 50%,
-			rgba(255, 255, 255, 0) 100%
-		);
-		pointer-events: none;
-		border-radius: 0 0 4px 4px;
+	.black-key::before {
+		/* This is to prevent accidentally tapping white key in between two black keys */
+		box-shadow: none;
+		background: transparent;
+		width: calc(var(--key-width));
 	}
 
-	.black-key:active::before,
-	.black-key.active::before {
+	.black-key:active::after,
+	.black-key.active::after {
 		background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 50%, #0f0f0f 100%);
 		box-shadow:
 			0 3px 6px rgba(0, 0, 0, 0.2),
@@ -221,7 +208,7 @@
 			border-radius: 0 0 4px 4px;
 		}
 
-		.black-key::before {
+		.black-key::after {
 			height: 4.5rem;
 			border-radius: 0 0 3px 3px;
 		}
@@ -237,7 +224,7 @@
 			background: linear-gradient(180deg, #fafafa 0%, #f0f0f0 50%, #e3e3e3 100%);
 		}
 
-		.black-key:hover::before {
+		.black-key:hover::after {
 			background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 50%, #2a2a2a 100%);
 		}
 	}
