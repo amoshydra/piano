@@ -16,9 +16,12 @@
 
 	function toggleFullscreen(): void {
 		if (!document.fullscreenElement) {
-			document.documentElement.requestFullscreen().catch((err) => {
-				console.error('Fullscreen error:', err);
-			});
+			const pianoElement = document.querySelector('.piano-container') as HTMLElement;
+			if (pianoElement) {
+				pianoElement.requestFullscreen().catch((err) => {
+					console.error('Fullscreen error:', err);
+				});
+			}
 		} else {
 			document.exitFullscreen();
 		}

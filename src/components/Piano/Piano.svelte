@@ -95,7 +95,7 @@
 	.piano-container {
 		display: flex;
 		justify-content: center;
-		align-items: flex-end;
+		align-items: center;
 	}
 	.piano-stand {
 		display: flex;
