@@ -2,6 +2,8 @@
 
 A mobile-friendly web piano with recording capabilities built using SvelteKit and Web Audio API.
 
+![export](https://github.com/user-attachments/assets/d8a6347f-cea3-4c9b-b6be-37343abff12d)
+
 ## Features
 
 ### Core Piano
@@ -64,6 +66,33 @@ pnpm build
 # Preview production build
 pnpm preview
 ```
+
+### Code Quality
+
+```bash
+# Type checking
+pnpm check            # Run type checking
+pnpm check:watch      # Watch mode for type checking
+
+# Linting and formatting
+pnpm format           # Format code with Prettier
+pnpm lint             # Run Prettier + ESLint checks
+```
+
+### Testing
+
+```bash
+# Run all tests (unit tests with Vitest)
+pnpm test
+
+# Run E2E tests with Playwright
+pnpm test:e2e
+```
+
+**Running single tests:**
+
+- Unit tests: Add `.only` to the test function temporarily, or use `npx vitest run -t "test name"`
+- E2E tests: Add `.only` to the test or use `npx playwright test --grep "test name pattern"`
 
 ## Usage
 
