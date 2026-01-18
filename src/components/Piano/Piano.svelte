@@ -5,6 +5,7 @@
 	import { isRecording } from '$lib/store';
 	import Key from './Key.svelte';
 	import { defaultKeys, findKeyByKeyCode, getKeyId } from '$lib/piano';
+	import type { PianoKey } from '$lib/piano.js';
 
 	let { keys = defaultKeys, keyWidth = '2rem' } = $props();
 
@@ -30,6 +31,20 @@
 
 		if (activeKeys.has(id)) return;
 
+		playNote(keyIndex, key, id);
+	}
+
+	function handleKeyUp(e: KeyboardEvent): void {
+		const keyIndex = findKeyByKeyCode(e.key, keys);
+		if (keyIndex < 0) return;
+
+		const key = keys[keyIndex];
+		const id = getKeyId(key, keyIndex);
+
+		stopNote(id);
+	}
+
+	function playNote(keyIndex: number, key: PianoKey, id: string): void {
 		activeKeys.add(id);
 
 		const frequency = audioEngine.getFrequencyByIndex(keyIndex, keys);
@@ -40,13 +55,7 @@
 		}
 	}
 
-	function handleKeyUp(e: KeyboardEvent): void {
-		const keyIndex = findKeyByKeyCode(e.key, keys);
-		if (keyIndex < 0) return;
-
-		const key = keys[keyIndex];
-		const id = getKeyId(key, keyIndex);
-
+	function stopNote(id: string): void {
 		activeKeys.delete(id);
 		audioEngine.stopNote(id);
 	}
@@ -65,6 +74,9 @@
 						{index}
 						{keys}
 						width={keyWidth}
+						isActive={activeKeys.has(getKeyId(key, index))}
+						onPointerDown={() => playNote(index, key, getKeyId(key, index))}
+						onPointerUp={() => stopNote(getKeyId(key, index))}
 					/>
 				{/each}
 			</div>

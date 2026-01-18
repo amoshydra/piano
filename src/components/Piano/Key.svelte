@@ -11,12 +11,24 @@
 		index: number;
 		keys: PianoKey[];
 		width?: string;
+		isActive?: boolean;
+		onPointerDown?: () => void;
+		onPointerUp?: () => void;
 	}
 
-	let { note, octave, color, index, keys, width = '2rem' }: Props = $props();
+	let {
+		note,
+		octave,
+		color,
+		index,
+		keys,
+		width = '2rem',
+		isActive = false,
+		onPointerDown,
+		onPointerUp
+	}: Props = $props();
 
 	let element: HTMLDivElement;
-	let isActive = $state(false);
 
 	onMount(() => {
 		if (!element) return;
@@ -50,26 +62,11 @@
 	}
 
 	function handlePointerDown(): void {
-		if (isActive) return;
-		isActive = true;
-
-		const frequency = audioEngine.getFrequencyByIndex(index, keys);
-		const id = `${note}${octave}-${index}`;
-
-		audioEngine.playNote(frequency, id);
-
-		setTimeout(() => {
-			isActive = false;
-			audioEngine.stopNote(id);
-		}, 500);
+		onPointerDown?.();
 	}
 
 	function handlePointerUp(): void {
-		const id = `${note}${octave}-${index}`;
-		if (isActive) {
-			isActive = false;
-			audioEngine.stopNote(id);
-		}
+		onPointerUp?.();
 	}
 </script>
 
