@@ -32,7 +32,7 @@
 
 		activeKeys.add(id);
 
-		const frequency = audioEngine.getFrequency(key.note, key.octave || 4);
+		const frequency = audioEngine.getFrequencyByIndex(keyIndex, keys);
 		audioEngine.playNote(frequency, id);
 
 		if ($isRecording) {
@@ -63,6 +63,7 @@
 						octave={key.octave || 4}
 						color={key.color}
 						{index}
+						{keys}
 						width={keyWidth}
 					/>
 				{/each}

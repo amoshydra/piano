@@ -5,6 +5,7 @@ This document provides essential guidelines for working with the Piano web appli
 ## Essential Commands
 
 ### Development
+
 ```bash
 pnpm dev              # Start development server (http://localhost:5173)
 pnpm build            # Production build
@@ -12,6 +13,7 @@ pnpm preview          # Preview production build
 ```
 
 ### Code Quality
+
 ```bash
 pnpm check            # Type checking with svelte-check
 pnpm check:watch      # Watch mode for type checking
@@ -20,18 +22,21 @@ pnpm lint             # Run Prettier + ESLint checks
 ```
 
 ### Testing
+
 ```bash
 pnpm test             # Run all E2E tests
 pnpm test:e2e        # Run Playwright tests (same as above)
 ```
 
 **Running single tests:** Playwright tests don't have a direct single-test flag, but you can:
+
 - Use `.only` on specific test in `e2e/*.test.ts` files temporarily
 - Filter tests: `npx playwright test --grep "test name pattern"`
 
 ## Code Style Guidelines
 
 ### Import Conventions
+
 - Use SvelteKit path aliases: `$lib/`, `$components/`, `$routes/`
 - Svelte 5 imports: `import { onMount } from 'svelte'` (no `type` keyword needed)
 - Store imports: Use `type` for store types when needed
@@ -44,12 +49,14 @@ import { writable, type Writable } from 'svelte/store';
 import { audioEngine } from '$lib/audio';
 
 // ❌ Bad
-import { onMount } from "svelte";
+import { onMount } from 'svelte';
 import * as Svelte from 'svelte';
 ```
 
 ### Formatting Rules
+
 Prettier configuration (`.prettierrc`):
+
 - **Tabs**, not spaces
 - **Single quotes** for strings
 - **No trailing commas**
@@ -59,6 +66,7 @@ Prettier configuration (`.prettierrc`):
 Run `pnpm format` before committing.
 
 ### TypeScript Conventions
+
 - **Strict mode** enabled in `tsconfig.json`
 - All function parameters must be typed
 - Use interfaces for complex objects (Props, Note, Recording)
@@ -86,6 +94,7 @@ function handleKeyDown(e) {
 ```
 
 ### Naming Conventions
+
 - **Files:** PascalCase.svelte (e.g., `MobilePiano.svelte`, `RecordButton.svelte`)
 - **Components:** PascalCase (e.g., `MobilePiano`, `RecordButton`)
 - **Functions:** camelCase (e.g., `handlePointerDown`, `toggleRecording`)
@@ -110,6 +119,7 @@ export class audio_engine {
 ```
 
 ### Svelte 5 Specific Patterns
+
 - Use `$props()` for component props (NOT `export let`)
 - Use `$state()` for reactive component state
 - Use `$derived()` for computed values
@@ -135,6 +145,7 @@ const activeKeys = derived(activeNotes, ($activeNotes) => [...]);
 ```
 
 ### Error Handling
+
 - **SSR safety:** Always check for `window` before accessing browser APIs
 - **Null checks:** Guard against null/undefined values
 - **Try-catch:** Wrap operations that might fail (audio, localStorage)
@@ -168,6 +179,7 @@ constructor() {
 ```
 
 ### Web Audio API Guidelines
+
 - **Initialization:** Create context only in browser environment
 - **Resume:** Always call `resume()` on first user interaction
 - **Cleanup:** Stop oscillators properly to prevent memory leaks
@@ -190,6 +202,7 @@ playNote(frequency: number, id: string): void {
 ```
 
 ### Component Structure
+
 - Use `<script lang="ts">` for TypeScript
 - Keep logic in script, styling in `<style>`, HTML in template
 - Use `role` and `aria-label` for accessibility
@@ -227,6 +240,7 @@ playNote(frequency: number, id: string): void {
 ```
 
 ### CSS Conventions
+
 - Use **CSS variables** for theme values (`--key-width`, `--key-background`)
 - Mobile-first approach with `@media` queries for larger screens
 - Use `rem` for responsive sizing, `px` for borders/shadows
@@ -234,6 +248,7 @@ playNote(frequency: number, id: string): void {
 - Modern features: `backdrop-filter: blur()`, `linear-gradient()`, `box-shadow` layers
 
 ### Testing Conventions
+
 - Use Playwright for E2E tests in `e2e/` directory
 - Test files: `*.test.ts`
 - Test functions use `test('description', async ({ page }) => {})` format
@@ -241,6 +256,7 @@ playNote(frequency: number, id: string): void {
 - Use `expect().toBeVisible()` for UI elements
 
 ### Project-Specific Patterns
+
 - **Audio:** Always check `typeof window !== 'undefined'` before using Audio API
 - **Storage:** Wrap localStorage in try-catch for quota/parsing errors
 - **Piano keys:** Use flexbox layout; black keys have `width: 0` with `::before` pseudo-element
@@ -257,6 +273,7 @@ playNote(frequency: number, id: string): void {
 6. Commit changes
 
 ## Key Files
+
 - `svelte.config.js` - SvelteKit configuration (aliases, adapter)
 - `tsconfig.json` - TypeScript strict mode configuration
 - `.prettierrc` - Prettier formatting rules

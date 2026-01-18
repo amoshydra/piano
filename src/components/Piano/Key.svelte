@@ -2,15 +2,18 @@
 	import { audioEngine } from '$lib/audio';
 	import { onMount } from 'svelte';
 
+	import type { PianoKey } from '$lib/piano.js';
+
 	interface Props {
 		note: string;
 		octave: number;
 		color: 'white' | 'black';
 		index: number;
+		keys: PianoKey[];
 		width?: string;
 	}
 
-	let { note, octave, color, index, width = '2rem' }: Props = $props();
+	let { note, octave, color, index, keys, width = '2rem' }: Props = $props();
 
 	let element: HTMLDivElement;
 	let isActive = $state(false);
@@ -50,7 +53,7 @@
 		if (isActive) return;
 		isActive = true;
 
-		const frequency = audioEngine.getFrequency(note, octave);
+		const frequency = audioEngine.getFrequencyByIndex(index, keys);
 		const id = `${note}${octave}-${index}`;
 
 		audioEngine.playNote(frequency, id);

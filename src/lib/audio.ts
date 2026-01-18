@@ -1,3 +1,5 @@
+import type { PianoKey } from './piano.js';
+
 export class AudioEngine {
 	private context: AudioContext | null = null;
 	private activeOscillators: Map<string, OscillatorNode[]> = new Map();
@@ -6,7 +8,10 @@ export class AudioEngine {
 
 	constructor() {
 		if (typeof window !== 'undefined') {
-			this.context = new (window.AudioContext || window.webkitAudioContext)();
+			const AudioContextClass =
+				window.AudioContext ||
+				(window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+			this.context = new AudioContextClass();
 			this.masterGain = this.context.createGain();
 			this.masterGain.gain.value = this.volume;
 			this.masterGain.connect(this.context.destination);
@@ -91,6 +96,14 @@ export class AudioEngine {
 
 		const semitonesFromA4 = (octave - 4) * 12 + (noteIndex - 9);
 		return 440 * Math.pow(2, semitonesFromA4 / 12);
+	}
+
+	getFrequencyByIndex(keyIndex: number, keys: PianoKey[]): number {
+		const startFrequency = 440;
+		const startIndex = keys.findIndex((k) => k.start === true);
+		const keyOffset = startIndex >= 0 ? -startIndex : 0;
+		const semitones = keyIndex + keyOffset;
+		return startFrequency * Math.pow(2, semitones / 12);
 	}
 
 	destroy(): void {
