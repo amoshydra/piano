@@ -1,15 +1,10 @@
 <script lang="ts">
-	import { audioEngine } from '$lib/audio';
 	import { onMount } from 'svelte';
-
-	import type { PianoKey } from '$lib/piano.js';
 
 	interface Props {
 		note: string;
 		octave: number;
 		color: 'white' | 'black';
-		index: number;
-		keys: PianoKey[];
 		width?: string;
 		isActive?: boolean;
 		onPointerDown?: () => void;
@@ -20,8 +15,6 @@
 		note,
 		octave,
 		color,
-		index,
-		keys,
 		width = '2rem',
 		isActive = false,
 		onPointerDown,
