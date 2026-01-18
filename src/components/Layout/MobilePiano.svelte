@@ -31,7 +31,7 @@
 	</header>
 
 	<main class="main">
-		<section class="recording-section">
+		<section class="controls-section">
 			<RecordButton />
 			<PianoControls />
 		</section>
@@ -119,9 +119,12 @@
 		z-index: 1;
 	}
 
-	.recording-section {
+	.controls-section {
 		display: flex;
 		justify-content: center;
+		align-items: center;
+		gap: 1rem;
+		flex-wrap: wrap;
 	}
 
 	.recordings-section {
@@ -170,20 +173,9 @@
 		.main {
 			gap: 1rem;
 		}
-
 		.piano-section,
 		.recordings-section {
-			padding: 1.5rem;
 			border-radius: 16px;
-		}
-
-		.piano-header {
-			flex-direction: column;
-			align-items: flex-start;
-		}
-
-		.piano-title h2 {
-			font-size: 1.25rem;
 		}
 	}
 
@@ -213,18 +205,13 @@
 			gap: 0.75rem;
 		}
 
+		.controls-section {
+			gap: 0.5rem;
+		}
+
 		.piano-section,
 		.recordings-section {
-			padding: 1rem;
 			border-radius: 12px;
-		}
-
-		.piano-title .emoji {
-			font-size: 1.5rem;
-		}
-
-		.piano-title h2 {
-			font-size: 1.125rem;
 		}
 
 		.footer {

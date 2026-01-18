@@ -10,14 +10,7 @@
 		onPointerUp?: () => void;
 	}
 
-	let {
-		note,
-		octave,
-		color,
-		isActive = false,
-		onPointerDown,
-		onPointerUp
-	}: Props = $props();
+	let { note, octave, color, isActive = false, onPointerDown, onPointerUp }: Props = $props();
 
 	let element: HTMLDivElement;
 
@@ -162,7 +155,7 @@
 		content: '';
 		position: absolute;
 		background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%);
-		top: 0;
+		top: -0.125rem;
 		left: 0;
 		display: block;
 		transform: translateX(-50%);

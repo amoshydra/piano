@@ -1,21 +1,11 @@
 <script lang="ts">
-	import { scale, volume } from '$lib/store';
+	import { scale } from '$lib/store';
 
-	let currentVolume = $state(0.2);
 	let currentScale = $state(1);
-
-	$effect(() => {
-		volume.set(currentVolume);
-	});
 
 	$effect(() => {
 		scale.set(currentScale);
 	});
-
-	function handleVolumeChange(e: Event): void {
-		const target = e.target as HTMLInputElement;
-		currentVolume = parseFloat(target.value);
-	}
 
 	function handleScaleChange(e: Event): void {
 		const target = e.target as HTMLInputElement;
@@ -24,58 +14,6 @@
 </script>
 
 <div class="controls">
-	<div class="control-group volume-control">
-		<div class="volume-icon">
-			{#if currentVolume < 0.1}
-				<svg
-					width="20"
-					height="20"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-				>
-					<path d="M11 5L6 9H2v6h4l5 4V5z" />
-					<path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
-				</svg>
-			{:else if currentVolume < 0.5}
-				<svg
-					width="20"
-					height="20"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-				>
-					<path d="M11 5L6 9H2v6h4l5 4V5z" />
-					<path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-				</svg>
-			{:else}
-				<svg
-					width="20"
-					height="20"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-				>
-					<path d="M11 5L6 9H2v6h4l5 4V5z" />
-					<path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
-				</svg>
-			{/if}
-		</div>
-		<input
-			id="volume"
-			type="range"
-			min="0"
-			max="1"
-			step="0.01"
-			bind:value={currentVolume}
-			oninput={handleVolumeChange}
-			aria-label="Volume control"
-		/>
-		<span class="volume-value">{Math.round(currentVolume * 100)}%</span>
-	</div>
 	<div class="control-group scale-control">
 		<div class="scale-icon">
 			<svg
@@ -110,22 +48,42 @@
 	.controls {
 		display: flex;
 		gap: 1rem;
-		justify-content: flex-end;
+		justify-content: center;
 		align-items: center;
+		flex-wrap: wrap;
 	}
 
 	.control-group {
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
-		background: rgba(0, 0, 0, 0.05);
-		padding: 0.75rem 1rem;
+		background: rgba(255, 255, 255, 0.15);
+		backdrop-filter: blur(20px);
+		border: 2px solid rgba(255, 255, 255, 0.3);
 		border-radius: 50px;
+		padding: 0.75rem 1rem;
+		font-size: 1rem;
+		font-weight: 600;
+		color: white;
+		box-shadow:
+			0 8px 32px rgba(0, 0, 0, 0.2),
+			0 2px 8px rgba(0, 0, 0, 0.1),
+			inset 0 1px 2px rgba(255, 255, 255, 0.2);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
-	.volume-icon,
+	.control-group:hover {
+		background: rgba(255, 255, 255, 0.25);
+		border-color: rgba(255, 255, 255, 0.5);
+		transform: translateY(-2px);
+		box-shadow:
+			0 12px 40px rgba(0, 0, 0, 0.25),
+			0 4px 12px rgba(0, 0, 0, 0.15),
+			inset 0 1px 2px rgba(255, 255, 255, 0.3);
+	}
+
 	.scale-icon {
-		color: #666;
+		color: white;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -134,9 +92,9 @@
 	input[type='range'] {
 		-webkit-appearance: none;
 		appearance: none;
-		width: 150px;
+		width: 100%;
 		height: 6px;
-		background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+		background: rgba(255, 255, 255, 0.3);
 		border-radius: 3px;
 		outline: none;
 		cursor: pointer;
@@ -149,7 +107,7 @@
 		width: 18px;
 		height: 18px;
 		background: white;
-		border: 3px solid #667eea;
+		border: none;
 		border-radius: 50%;
 		cursor: pointer;
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -165,7 +123,7 @@
 		width: 18px;
 		height: 18px;
 		background: white;
-		border: 3px solid #667eea;
+		border: none;
 		border-radius: 50%;
 		cursor: pointer;
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -177,11 +135,10 @@
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 	}
 
-	.volume-value,
 	.scale-value {
 		font-size: 0.875rem;
 		font-weight: 600;
-		color: #1a1a2e;
+		color: white;
 		min-width: 45px;
 	}
 
@@ -198,7 +155,6 @@
 			width: 200px;
 		}
 
-		.volume-value,
 		.scale-value {
 			font-size: 0.8125rem;
 		}
@@ -232,13 +188,11 @@
 			border-width: 2.5px;
 		}
 
-		.volume-icon svg,
 		.scale-icon svg {
 			width: 16px;
 			height: 16px;
 		}
 
-		.volume-value,
 		.scale-value {
 			font-size: 0.75rem;
 			min-width: 40px;

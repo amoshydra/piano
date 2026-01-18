@@ -71,7 +71,6 @@
 <div class="piano-container" role="application" aria-label="Piano keyboard">
 	<div class="piano-stand">
 		<div class="piano-body">
-			<div class="piano-fallboard"></div>
 			<div class="piano" style="zoom: {$scale}" role="list">
 				{#each keys as key, index (getKeyId(key, index))}
 					<Key
@@ -84,7 +83,6 @@
 					/>
 				{/each}
 			</div>
-			<div class="piano-bottom"></div>
 		</div>
 	</div>
 </div>
@@ -95,14 +93,12 @@
 		justify-content: center;
 		align-items: flex-end;
 	}
-
 	.piano-stand {
 		display: flex;
 		justify-content: center;
 		align-items: flex-end;
 		width: 100%;
 	}
-
 	.piano-body {
 		display: flex;
 		flex-direction: column;
@@ -110,43 +106,22 @@
 		position: relative;
 		background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
 		border-radius: 8px;
-		padding: 0.75rem;
+		padding: 1rem;
 		width: 100%;
 		box-shadow:
 			0 8px 32px rgba(0, 0, 0, 0.4),
 			inset 0 1px 2px rgba(255, 255, 255, 0.1);
 	}
-
-	.piano-fallboard {
-		height: 4em;
-		width: 100%;
-		background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
-		margin-bottom: 0.5rem;
-		border-radius: 4px;
-		box-shadow:
-			inset 0 2px 4px rgba(0, 0, 0, 0.2),
-			0 2px 8px rgba(0, 0, 0, 0.1);
-		border: 1px solid #2a2a2a;
-	}
-
 	.piano {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		position: relative;
 		background: linear-gradient(180deg, #2b2b2b 0%, #2b2b2b 100%);
-		padding: 0.5rem;
+		padding: 1rem 0;
 		border-radius: 4px;
 		box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
 		min-width: min-content;
-	}
-
-	.piano-bottom {
-		height: 1em;
 		width: 100%;
-		margin-top: 1em;
-		background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
-		border-radius: 2px;
-		box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
 	}
 </style>
