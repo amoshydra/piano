@@ -30,44 +30,75 @@
 
 	function formatDate(timestamp: number): string {
 		const date = new Date(timestamp);
-		return (
-			date.toLocaleDateString() +
-			' ' +
-			date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-		);
+		const now = new Date();
+		const diffMs = now.getTime() - date.getTime();
+		const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+		if (diffDays === 0) {
+			return 'Today';
+		} else if (diffDays === 1) {
+			return 'Yesterday';
+		} else if (diffDays < 7) {
+			return `${diffDays} days ago`;
+		} else {
+			return date.toLocaleDateString();
+		}
 	}
 </script>
 
 <div class="recordings-container">
 	<button class="toggle-button" onclick={toggleList} aria-expanded={showList}>
-		{showList ? '▼' : '▶'} My Recordings ({$recordings.length})
+		<span class="toggle-icon">{showList ? '▼' : '▶'}</span>
+		<span class="toggle-text">My Recordings</span>
+		<span class="toggle-count">{$recordings.length}</span>
 	</button>
 
 	{#if showList}
 		<div class="recordings-list">
 			{#if $recordings.length === 0}
-				<p class="no-recordings">No recordings yet. Start recording to create your first one!</p>
+				<div class="no-recordings">
+					<div class="no-recordings-icon">🎵</div>
+					<p class="no-recordings-text">No recordings yet</p>
+					<p class="no-recordings-subtext">Start recording to create your first one!</p>
+				</div>
 			{:else}
-				{#each $recordings as recording (recording.id)}
-					<div class="recording-item">
-						<div class="recording-info">
-							<span class="recording-name">{recording.name}</span>
-							<span class="recording-meta"
-								>{formatDuration(recording.duration)} • {formatDate(recording.createdAt)}</span
-							>
+				<div class="recordings-grid">
+					{#each $recordings as recording (recording.id)}
+						<div class="recording-card">
+							<div class="recording-header">
+								<div class="recording-icon">🎹</div>
+								<div class="recording-info">
+									<h3 class="recording-name">{recording.name}</h3>
+									<div class="recording-meta">
+										<span class="duration">⏱ {formatDuration(recording.duration)}</span>
+										<span class="date">{formatDate(recording.createdAt)}</span>
+									</div>
+								</div>
+							</div>
+							<div class="recording-actions">
+								<PlaybackControls {recording} />
+								<button
+									class="delete-button"
+									onclick={() => handleDelete(recording.id)}
+									aria-label="Delete recording"
+								>
+									<svg
+										width="20"
+										height="20"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+									>
+										<path
+											d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+										/>
+									</svg>
+								</button>
+							</div>
 						</div>
-						<div class="recording-actions">
-							<PlaybackControls {recording} />
-							<button
-								class="delete-button"
-								onclick={() => handleDelete(recording.id)}
-								aria-label="Delete recording"
-							>
-								🗑
-							</button>
-						</div>
-					</div>
-				{/each}
+					{/each}
+				</div>
 			{/if}
 		</div>
 	{/if}
@@ -75,72 +106,157 @@
 
 <style>
 	.recordings-container {
-		margin-top: 1rem;
+		width: 100%;
 	}
 
 	.toggle-button {
 		width: 100%;
-		padding: 0.75rem;
-		background: #fff;
-		border: 1px solid #ddd;
-		border-radius: 8px;
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 1rem 1.25rem;
+		background: rgba(0, 0, 0, 0.03);
+		border: 2px solid rgba(0, 0, 0, 0.08);
+		border-radius: 12px;
 		cursor: pointer;
 		font-weight: 600;
-		color: #333;
+		font-size: 1rem;
+		color: #1a1a2e;
 		text-align: left;
-		transition: all 0.2s;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 	}
 
 	.toggle-button:hover {
-		background: #f8f8f8;
+		background: rgba(0, 0, 0, 0.05);
+		border-color: rgba(0, 0, 0, 0.12);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	}
+
+	.toggle-button:active {
+		transform: translateY(0);
+	}
+
+	.toggle-icon {
+		font-size: 0.875rem;
+		color: #667eea;
+		transition: transform 0.3s ease;
+	}
+
+	.toggle-text {
+		flex: 1;
+		letter-spacing: 0.5px;
+	}
+
+	.toggle-count {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		color: white;
+		padding: 0.25rem 0.625rem;
+		border-radius: 20px;
+		font-size: 0.75rem;
+		font-weight: 700;
 	}
 
 	.recordings-list {
-		margin-top: 0.5rem;
-		border: 1px solid #ddd;
-		border-radius: 8px;
-		overflow: hidden;
+		margin-top: 1rem;
 	}
 
 	.no-recordings {
-		padding: 1rem;
-		color: #666;
 		text-align: center;
+		padding: 3rem 2rem;
+		background: rgba(0, 0, 0, 0.02);
+		border-radius: 12px;
+		border: 2px dashed rgba(0, 0, 0, 0.1);
+	}
+
+	.no-recordings-icon {
+		font-size: 3rem;
+		margin-bottom: 1rem;
+		opacity: 0.5;
+	}
+
+	.no-recordings-text {
+		font-size: 1.125rem;
+		font-weight: 600;
+		color: #1a1a2e;
+		margin: 0 0 0.5rem 0;
+	}
+
+	.no-recordings-subtext {
+		font-size: 0.875rem;
+		color: #666;
 		margin: 0;
 	}
 
-	.recording-item {
+	.recordings-grid {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.recording-card {
+		background: white;
+		border: 1px solid rgba(0, 0, 0, 0.08);
+		border-radius: 12px;
+		padding: 1rem;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+	}
+
+	.recording-card:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+		border-color: rgba(102, 126, 234, 0.2);
+	}
+
+	.recording-header {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.recording-icon {
+		font-size: 1.5rem;
+		background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+		width: 48px;
+		height: 48px;
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		padding: 0.75rem;
-		border-bottom: 1px solid #eee;
-		background: white;
-		transition: background 0.2s;
-	}
-
-	.recording-item:hover {
-		background: #f8f8f8;
-	}
-
-	.recording-item:last-child {
-		border-bottom: none;
+		justify-content: center;
+		border-radius: 10px;
 	}
 
 	.recording-info {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
+		flex: 1;
+		min-width: 0;
 	}
 
 	.recording-name {
+		font-size: 1rem;
 		font-weight: 600;
-		color: #333;
+		color: #1a1a2e;
+		margin: 0 0 0.375rem 0;
+		letter-spacing: -0.25px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.recording-meta {
-		font-size: 0.875rem;
+		display: flex;
+		gap: 0.75rem;
+		font-size: 0.8125rem;
 		color: #666;
+		flex-wrap: wrap;
+	}
+
+	.duration,
+	.date {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
 	}
 
 	.recording-actions {
@@ -153,32 +269,114 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 32px;
-		height: 32px;
-		background: transparent;
-		border: 1px solid #dc3545;
+		width: 36px;
+		height: 36px;
+		background: rgba(220, 53, 69, 0.1);
+		border: 1px solid rgba(220, 53, 69, 0.2);
 		color: #dc3545;
-		border-radius: 4px;
+		border-radius: 8px;
 		cursor: pointer;
-		transition: all 0.2s;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		font-size: 1rem;
 	}
 
 	.delete-button:hover {
-		background: #dc3545;
+		background: rgba(220, 53, 69, 0.9);
+		border-color: #dc3545;
 		color: white;
+		transform: scale(1.05);
 	}
 
-	@media (max-width: 640px) {
-		.recording-item {
-			flex-direction: column;
-			align-items: flex-start;
+	.delete-button:active {
+		transform: scale(0.95);
+	}
+
+	@media (max-width: 768px) {
+		.toggle-button {
+			padding: 0.875rem 1rem;
+			font-size: 0.9375rem;
+		}
+
+		.toggle-icon {
+			font-size: 0.75rem;
+		}
+
+		.toggle-count {
+			font-size: 0.6875rem;
+			padding: 0.1875rem 0.5rem;
+		}
+
+		.no-recordings {
+			padding: 2rem 1.5rem;
+		}
+
+		.no-recordings-icon {
+			font-size: 2.5rem;
+		}
+
+		.no-recordings-text {
+			font-size: 1rem;
+		}
+
+		.no-recordings-subtext {
+			font-size: 0.8125rem;
+		}
+
+		.recording-card {
+			padding: 0.875rem;
+		}
+
+		.recording-icon {
+			font-size: 1.25rem;
+			width: 40px;
+			height: 40px;
+		}
+
+		.recording-name {
+			font-size: 0.9375rem;
+		}
+
+		.recording-meta {
+			font-size: 0.75rem;
+		}
+
+		.delete-button {
+			width: 32px;
+			height: 32px;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.toggle-button {
 			gap: 0.5rem;
 		}
 
+		.recording-header {
+			gap: 0.5rem;
+		}
+
+		.recording-card {
+			padding: 0.75rem;
+		}
+
+		.recording-icon {
+			width: 36px;
+			height: 36px;
+			font-size: 1.125rem;
+		}
+
+		.recording-name {
+			font-size: 0.875rem;
+			margin-bottom: 0.25rem;
+		}
+
+		.recording-meta {
+			gap: 0.5rem;
+			font-size: 0.6875rem;
+		}
+
 		.recording-actions {
-			width: 100%;
-			justify-content: space-between;
+			gap: 0.375rem;
 		}
 
 		.delete-button {

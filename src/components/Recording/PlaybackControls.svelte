@@ -64,12 +64,21 @@
 
 <div class="playback-controls">
 	<button
-		class="play-button"
+		class="play-button {$isPlaying ? 'playing' : ''}"
 		onclick={playRecording}
 		aria-label={$isPlaying ? 'Stop playback' : 'Play recording'}
 		aria-pressed={$isPlaying}
 	>
-		{$isPlaying ? '⏹' : '▶'}
+		{#if $isPlaying}
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+				<rect x="6" y="4" width="4" height="16" rx="1" />
+				<rect x="14" y="4" width="4" height="16" rx="1" />
+			</svg>
+		{:else}
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+				<path d="M5 3l14 9-14 9V3z" />
+			</svg>
+		{/if}
 	</button>
 </div>
 
@@ -77,38 +86,77 @@
 	.playback-controls {
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
 	}
 
 	.play-button {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 40px;
-		height: 40px;
-		background: #007bff;
+		width: 44px;
+		height: 44px;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 		color: white;
 		border: none;
 		border-radius: 50%;
-		font-size: 1.25rem;
 		cursor: pointer;
-		transition: all 0.2s;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 	}
 
 	.play-button:hover {
-		background: #0056b3;
-		transform: scale(1.05);
+		transform: scale(1.1);
+		box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 	}
 
 	.play-button:active {
 		transform: scale(0.95);
 	}
 
-	@media (max-width: 640px) {
+	.play-button.playing {
+		background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+		box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+		animation: playing-pulse 1.5s ease-in-out infinite;
+	}
+
+	.play-button.playing:hover {
+		box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4);
+	}
+
+	@keyframes playing-pulse {
+		0%,
+		100% {
+			box-shadow:
+				0 4px 12px rgba(220, 53, 69, 0.3),
+				0 0 0 0 rgba(220, 53, 69, 0.7);
+		}
+		50% {
+			box-shadow:
+				0 4px 12px rgba(220, 53, 69, 0.3),
+				0 0 0 8px rgba(220, 53, 69, 0);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.play-button {
+			width: 40px;
+			height: 40px;
+		}
+
+		.play-button svg {
+			width: 20px;
+			height: 20px;
+		}
+	}
+
+	@media (max-width: 480px) {
 		.play-button {
 			width: 36px;
 			height: 36px;
-			font-size: 1.125rem;
+		}
+
+		.play-button svg {
+			width: 18px;
+			height: 18px;
 		}
 	}
 </style>
