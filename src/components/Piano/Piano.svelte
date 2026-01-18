@@ -50,20 +50,6 @@
 		activeKeys.delete(id);
 		audioEngine.stopNote(id);
 	}
-
-	function getBlackKeyPosition(key: { note: string; octave?: number; color: string }): string {
-		const keyIndex = keys.findIndex((k) => k === key);
-		const previousWhiteKey = keys[keyIndex - 1];
-		const nextWhiteKey = keys[keyIndex + 1];
-
-		if (!previousWhiteKey || !nextWhiteKey) return '50%';
-
-		const prevIndex = keys.indexOf(previousWhiteKey);
-		const nextIndex = keys.indexOf(nextWhiteKey);
-
-		const midPoint = (prevIndex + nextIndex) / 2;
-		return `calc(${midPoint} * var(--key-width) + var(--key-width) / 2)`;
-	}
 </script>
 
 <div class="piano-container" role="application" aria-label="Piano keyboard">
@@ -71,35 +57,15 @@
 		<div class="piano-body">
 			<div class="piano-fallboard"></div>
 			<div class="piano" style="--key-width: {keyWidth}" role="list">
-				<!-- White Keys -->
-				<div class="white-keys">
-					{#each keys.filter((k) => k.color === 'white') as key (getKeyId(key, keys.indexOf(key)))}
-						{@const realIndex = keys.indexOf(key)}
-						<Key
-							note={key.note}
-							octave={key.octave || 4}
-							color="white"
-							index={realIndex}
-							width={keyWidth}
-						/>
-					{/each}
-				</div>
-
-				<!-- Black Keys -->
-				<div class="black-keys">
-					{#each keys.filter((k) => k.color === 'black') as key (getKeyId(key, keys.indexOf(key)))}
-						{@const realIndex = keys.indexOf(key)}
-						<div class="black-key-wrapper" style="--position: {getBlackKeyPosition(key)}">
-							<Key
-								note={key.note}
-								octave={key.octave || 4}
-								color="black"
-								index={realIndex}
-								width={keyWidth}
-							/>
-						</div>
-					{/each}
-				</div>
+				{#each keys as key, index (getKeyId(key, index))}
+					<Key
+						note={key.note}
+						octave={key.octave || 4}
+						color={key.color}
+						{index}
+						width={keyWidth}
+					/>
+				{/each}
 			</div>
 			<div class="piano-bottom"></div>
 		</div>
@@ -160,33 +126,6 @@
 		box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
 	}
 
-	.white-keys {
-		display: flex;
-		justify-content: center;
-		align-items: flex-end;
-		height: 100%;
-		z-index: 1;
-	}
-
-	.black-keys {
-		position: absolute;
-		top: 0;
-		left: 0.5rem;
-		right: 0.5rem;
-		height: 6.5rem;
-		display: flex;
-		justify-content: center;
-		pointer-events: none;
-		z-index: 2;
-	}
-
-	.black-key-wrapper {
-		position: absolute;
-		left: var(--position);
-		transform: translateX(-50%);
-		pointer-events: auto;
-	}
-
 	.piano-bottom {
 		height: 0.5rem;
 		margin-top: 0.5rem;
@@ -216,10 +155,6 @@
 			padding: 0.375rem;
 		}
 
-		.black-keys {
-			height: 5rem;
-		}
-
 		.piano-bottom {
 			margin-top: 0.375rem;
 		}
@@ -242,10 +177,6 @@
 		.piano {
 			height: 7rem;
 			padding: 0.25rem;
-		}
-
-		.black-keys {
-			height: 3.5rem;
 		}
 
 		.piano-bottom {

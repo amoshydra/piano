@@ -92,16 +92,13 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		color: white;
 		font-weight: bold;
 		user-select: none;
-		background: var(--key-background);
 		height: 10rem;
 		width: var(--key-width);
 		transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 		touch-action: none;
 		position: relative;
-		overflow: hidden;
 	}
 
 	.key-reflection {
@@ -121,7 +118,7 @@
 	}
 
 	.white-key {
-		--key-background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 50%, #e8e8e8 100%);
+		background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 50%, #e8e8e8 100%);
 		z-index: 1;
 		justify-content: center;
 		align-items: flex-end;
@@ -161,14 +158,26 @@
 	}
 
 	.black-key {
-		--key-background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%);
-		width: calc(0.6 * var(--key-width));
+		background: transparent;
+		width: 0;
 		z-index: 2;
-		position: relative;
-		background: var(--key-background);
+		border: none;
+	}
+
+	.black-key::before {
+		content: '';
+		position: absolute;
+		background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%);
+		top: 0;
+		left: 0;
+		display: block;
+		transform: translateX(-50%);
+		width: calc(0.8 * var(--key-width));
 		height: 6.5rem;
 		border-radius: 0 0 4px 4px;
-		border: 1px solid #1a1a1a;
+		border: 2px solid white;
+		border-top: 1px solid black;
+		border-bottom: none;
 		box-shadow:
 			0 6px 12px rgba(0, 0, 0, 0.3),
 			inset 0 -2px 4px rgba(0, 0, 0, 0.2),
@@ -193,14 +202,14 @@
 		border-radius: 0 0 4px 4px;
 	}
 
-	.black-key:active,
-	.black-key.active {
+	.black-key:active::before,
+	.black-key.active::before {
 		background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 50%, #0f0f0f 100%);
 		box-shadow:
 			0 3px 6px rgba(0, 0, 0, 0.2),
 			inset 0 -1px 2px rgba(0, 0, 0, 0.15),
 			inset 0 1px 2px rgba(255, 255, 255, 0.05);
-		transform: translateY(2px);
+		transform: translateX(-50%) translateY(2px);
 	}
 
 	@media (max-width: 640px) {
@@ -212,7 +221,7 @@
 			border-radius: 0 0 4px 4px;
 		}
 
-		.black-key {
+		.black-key::before {
 			height: 4.5rem;
 			border-radius: 0 0 3px 3px;
 		}
@@ -228,7 +237,7 @@
 			background: linear-gradient(180deg, #fafafa 0%, #f0f0f0 50%, #e3e3e3 100%);
 		}
 
-		.black-key:hover {
+		.black-key:hover::before {
 			background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 50%, #2a2a2a 100%);
 		}
 	}
