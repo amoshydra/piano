@@ -270,7 +270,38 @@ playNote(frequency: number, id: string): void {
 3. Run `pnpm lint` to check for errors
 4. Run `pnpm check` for type safety
 5. Test manually with `pnpm dev`
-6. Commit changes
+6. Commit changes using conventional commit format
+
+## Conventional Commits
+
+**All commits must follow conventional commit format:**
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Types:**
+
+- `feat:` - new features
+- `fix:` - bug fixes
+- `docs:` - documentation changes
+- `style:` - formatting, styling changes
+- `refactor:` - code refactoring
+- `test:` - tests
+- `chore:` - maintenance, build, dependencies
+- `perf:` - performance improvements
+- `ci:` - CI/CD changes
+
+**Examples:**
+
+- `feat(piano): add volume control slider`
+- `fix(audio): resolve frequency calculation error`
+- `docs(readme): update installation instructions`
+- `test(audio): add unit tests for frequency calculations`
 
 ## Key Files
 
