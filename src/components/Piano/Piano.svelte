@@ -16,7 +16,6 @@
 	}
 
 	onMount(() => {
-		audioEngine.resume();
 		window.addEventListener('keydown', handleKeyDown);
 		window.addEventListener('keyup', handleKeyUp);
 
@@ -55,7 +54,9 @@
 		stopNote(id);
 	}
 
-	function playNote(keyIndex: number, key: PianoKey, id: string): void {
+	async function playNote(keyIndex: number, key: PianoKey, id: string): Promise<void> {
+		await audioEngine.resume();
+
 		activeKeysArray = [...activeKeysArray, id];
 
 		const frequency = audioEngine.getFrequencyByIndex(keyIndex, keys);
