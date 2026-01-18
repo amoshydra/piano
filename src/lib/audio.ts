@@ -25,7 +25,7 @@ export class AudioEngine {
 		}
 	}
 
-	playNote(frequency: number, id: string, waveType: OscillatorType = 'sine'): void {
+	playNote(frequency: number, id: string): void {
 		if (!id || !this.context || !this.masterGain) return;
 
 		if (!this.activeOscillators.has(id)) {
@@ -35,7 +35,11 @@ export class AudioEngine {
 		const oscillator = this.context.createOscillator();
 		const gainNode = this.context.createGain();
 
-		oscillator.type = waveType;
+		const real = new Float32Array([0, 0, 0, 0, 0, 0]);
+		const imag = new Float32Array([0, 2, 0.5, 0.3, 0, 0.1]);
+		const pianoWave = this.context.createPeriodicWave(real, imag);
+		oscillator.setPeriodicWave(pianoWave);
+
 		oscillator.frequency.setValueAtTime(frequency, this.context.currentTime);
 
 		gainNode.gain.setValueAtTime(this.volume, this.context.currentTime);
