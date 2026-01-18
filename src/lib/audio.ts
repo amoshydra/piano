@@ -4,7 +4,7 @@ export class AudioEngine {
 	private context: AudioContext | null = null;
 	private activeOscillators: Map<string, OscillatorNode[]> = new Map();
 	private masterGain: GainNode | null = null;
-	private volume: number = 0.2;
+	private volume: number = 0.5;
 
 	constructor() {
 		if (typeof window !== 'undefined') {
