@@ -162,23 +162,10 @@
 
 	.black-key {
 		--key-background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%);
-		width: 0;
+		width: calc(0.6 * var(--key-width));
 		z-index: 2;
 		position: relative;
-		background: transparent;
-		border: none;
-		height: 10rem;
-	}
-
-	.black-key::before {
-		content: '';
-		position: absolute;
 		background: var(--key-background);
-		top: 0;
-		left: 0;
-		display: block;
-		transform: translateX(-50%);
-		width: calc(0.75 * var(--key-width));
 		height: 6.5rem;
 		border-radius: 0 0 4px 4px;
 		border: 1px solid #1a1a1a;
@@ -206,14 +193,14 @@
 		border-radius: 0 0 4px 4px;
 	}
 
-	.black-key:active::before,
-	.black-key.active::before {
+	.black-key:active,
+	.black-key.active {
 		background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 50%, #0f0f0f 100%);
 		box-shadow:
 			0 3px 6px rgba(0, 0, 0, 0.2),
 			inset 0 -1px 2px rgba(0, 0, 0, 0.15),
 			inset 0 1px 2px rgba(255, 255, 255, 0.05);
-		transform: translateX(-50%) translateY(2px);
+		transform: translateY(2px);
 	}
 
 	@media (max-width: 640px) {
@@ -225,7 +212,7 @@
 			border-radius: 0 0 4px 4px;
 		}
 
-		.black-key::before {
+		.black-key {
 			height: 4.5rem;
 			border-radius: 0 0 3px 3px;
 		}
@@ -241,7 +228,7 @@
 			background: linear-gradient(180deg, #fafafa 0%, #f0f0f0 50%, #e3e3e3 100%);
 		}
 
-		.black-key:hover::before {
+		.black-key:hover {
 			background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 50%, #2a2a2a 100%);
 		}
 	}
