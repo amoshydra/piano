@@ -5,18 +5,21 @@ A mobile-friendly web piano with recording capabilities built using SvelteKit an
 ## Features
 
 ### Core Piano
+
 - **Multi-touch support**: Play chords by touching multiple keys simultaneously
 - **Keyboard shortcuts**: Use your computer keyboard to play notes
 - **Responsive design**: Optimized for mobile, tablet, and desktop devices
 - **Clean UI**: Modern, intuitive interface with visual feedback
 
 ### Recording System
+
 - **Record your playing**: Capture your piano sessions
 - **Playback recordings**: Listen to your saved recordings
 - **Manage recordings**: Delete recordings you no longer need
 - **Local storage**: Recordings are saved in your browser's local storage
 
 ### Audio
+
 - **Web Audio API**: High-quality audio synthesis
 - **Volume control**: Adjust the volume to your preference
 - **Multiple oscillators**: Support for playing simultaneous notes
@@ -25,7 +28,8 @@ A mobile-friendly web piano with recording capabilities built using SvelteKit an
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - pnpm (recommended), npm, or yarn
 
 ### Installation
@@ -91,24 +95,25 @@ Use the volume slider to adjust the master volume from 0% to 100%.
 
 ## Keyboard Shortcuts
 
-| Key | Note | Key | Note |
-|-----|-------|-----|-------|
-| Tab | G | 1 | G# |
-| Q | A | 2 | A# |
-| W | B | 4 | C# |
-| E | C | 5 | D# |
-| R | D | 7 | F# |
-| T | E | 8 | G# |
-| Y | F | 9 | A# |
-| U | G | - | C# |
-| I | A | = | D# |
-| O | B | [ | D |
-| P | C | ] | E |
-| \ | F | Backspace | F# |
+| Key | Note | Key       | Note |
+| --- | ---- | --------- | ---- |
+| Tab | G    | 1         | G#   |
+| Q   | A    | 2         | A#   |
+| W   | B    | 4         | C#   |
+| E   | C    | 5         | D#   |
+| R   | D    | 7         | F#   |
+| T   | E    | 8         | G#   |
+| Y   | F    | 9         | A#   |
+| U   | G    | -         | C#   |
+| I   | A    | =         | D#   |
+| O   | B    | [         | D    |
+| P   | C    | ]         | E    |
+| \   | F    | Backspace | F#   |
 
 ## Technical Details
 
 ### Technologies
+
 - **SvelteKit**: Modern web framework
 - **TypeScript**: Type-safe development
 - **Web Audio API**: Audio synthesis

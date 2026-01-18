@@ -1,24 +1,27 @@
 export class AudioEngine {
-	private context: AudioContext;
+	private context: AudioContext | null = null;
 	private activeOscillators: Map<string, OscillatorNode[]> = new Map();
-	private masterGain: GainNode;
+	private masterGain: GainNode | null = null;
 	private volume: number = 0.2;
 
 	constructor() {
-		this.context = new (window.AudioContext || window.webkitAudioContext)();
-		this.masterGain = this.context.createGain();
-		this.masterGain.gain.value = this.volume;
-		this.masterGain.connect(this.context.destination);
+		if (typeof window !== 'undefined') {
+			this.context = new (window.AudioContext || window.webkitAudioContext)();
+			this.masterGain = this.context.createGain();
+			this.masterGain.gain.value = this.volume;
+			this.masterGain.connect(this.context.destination);
+		}
 	}
 
 	async resume(): Promise<void> {
+		if (!this.context) return;
 		if (this.context.state === 'suspended') {
 			await this.context.resume();
 		}
 	}
 
 	playNote(frequency: number, id: string, waveType: OscillatorType = 'sine'): void {
-		if (!id) return;
+		if (!id || !this.context || !this.masterGain) return;
 
 		if (!this.activeOscillators.has(id)) {
 			this.activeOscillators.set(id, []);
@@ -56,12 +59,12 @@ export class AudioEngine {
 	}
 
 	stopNote(id: string): void {
-		if (!id) return;
+		if (!id || !this.context) return;
 		const oscillators = this.activeOscillators.get(id);
 		if (oscillators) {
 			oscillators.forEach((osc) => {
 				try {
-					osc.stop(this.context.currentTime);
+					osc.stop(this.context!.currentTime);
 				} catch (e) {
 					console.error('Error stopping oscillator:', e);
 				}
@@ -72,7 +75,9 @@ export class AudioEngine {
 
 	setVolume(volume: number): void {
 		this.volume = Math.max(0, Math.min(1, volume));
-		this.masterGain.gain.setValueAtTime(this.volume, this.context.currentTime);
+		if (this.masterGain && this.context) {
+			this.masterGain.gain.setValueAtTime(this.volume, this.context.currentTime);
+		}
 	}
 
 	getVolume(): number {
@@ -102,4 +107,13 @@ export class AudioEngine {
 	}
 }
 
-export const audioEngine = new AudioEngine();
+let audioEngineInstance: AudioEngine | null = null;
+
+export function getAudioEngine(): AudioEngine {
+	if (!audioEngineInstance && typeof window !== 'undefined') {
+		audioEngineInstance = new AudioEngine();
+	}
+	return audioEngineInstance || new AudioEngine();
+}
+
+export const audioEngine = getAudioEngine();
