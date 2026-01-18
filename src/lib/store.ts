@@ -1,4 +1,4 @@
-import { writable, derived, type Writable } from 'svelte/store';
+import { derived, writable, type Writable } from 'svelte/store';
 
 export interface Note {
 	id: string;
@@ -30,6 +30,8 @@ export const currentRecording: Writable<Recording | null> = writable(null);
 export const isPlaying: Writable<boolean> = writable(false);
 
 export const volume: Writable<number> = writable(0.2);
+
+export const scale: Writable<number> = writable(1);
 
 export const activeNotes: Writable<Set<string>> = writable(new Set());
 

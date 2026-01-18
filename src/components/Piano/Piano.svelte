@@ -3,14 +3,13 @@
 	import { defaultKeys, findKeyByKeyCode, getKeyId } from '$lib/piano';
 	import type { PianoKey } from '$lib/piano.js';
 	import { recordNote } from '$lib/recorder';
-	import { isRecording } from '$lib/store';
+	import { isRecording, scale } from '$lib/store';
 	import { onMount } from 'svelte';
 	import Key from './Key.svelte';
 
 	let { keys = defaultKeys, keyWidth = '2rem' } = $props();
 
 	let activeKeysArray = $state<string[]>([]);
-	let scale = $state(1); // Scale factor for piano (1 = 100%)
 
 	function isKeyActive(key: PianoKey, index: number): boolean {
 		return activeKeysArray.includes(getKeyId(key, index));
@@ -73,7 +72,7 @@
 	<div class="piano-stand">
 		<div class="piano-body">
 			<div class="piano-fallboard"></div>
-			<div class="piano" style="zoom: {scale}" role="list">
+			<div class="piano" style="zoom: {$scale}" role="list">
 				{#each keys as key, index (getKeyId(key, index))}
 					<Key
 						note={key.note}
@@ -85,25 +84,6 @@
 						onPointerUp={() => stopNote(getKeyId(key, index))}
 					/>
 				{/each}
-			</div>
-
-			<!-- Piano Controls -->
-			<div class="piano-controls">
-				<div class="control-group">
-					<label for="scale-slider">Scale: {Math.round(scale * 100)}%</label>
-					<input
-						id="scale-slider"
-						type="range"
-						min="0.5"
-						max="2"
-						step="0.1"
-						value={scale}
-						oninput={(e) => {
-							const target = e.target as HTMLInputElement;
-							scale = parseFloat(target.value);
-						}}
-					/>
-				</div>
 			</div>
 			<div class="piano-bottom"></div>
 		</div>
@@ -170,71 +150,6 @@
 		background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
 		border-radius: 2px;
 		box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-	}
-
-	.piano-controls {
-		background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
-		padding: 1rem;
-		border-radius: 8px;
-		margin-top: 1rem;
-		border: 1px solid #3a3a3a;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-	}
-
-	.control-group {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	.control-group label {
-		color: #fff;
-		font-weight: 600;
-		font-size: 0.875rem;
-		min-width: 80px;
-	}
-
-	.control-group input[type='range'] {
-		flex: 1;
-		height: 6px;
-		background: #4a4a4a;
-		border-radius: 3px;
-		outline: none;
-		-webkit-appearance: none;
-		cursor: pointer;
-	}
-
-	.control-group input[type='range']::-webkit-slider-thumb {
-		-webkit-appearance: none;
-		appearance: none;
-		width: 18px;
-		height: 18px;
-		background: linear-gradient(180deg, #6a6a6a 0%, #5a5a5a 100%);
-		border-radius: 50%;
-		cursor: pointer;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-		transition: all 0.15s ease;
-	}
-
-	.control-group input[type='range']::-moz-range-thumb {
-		width: 18px;
-		height: 18px;
-		background: linear-gradient(180deg, #6a6a6a 0%, #5a5a5a 100%);
-		border-radius: 50%;
-		cursor: pointer;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-		border: none;
-		transition: all 0.15s ease;
-	}
-
-	.control-group input[type='range']:hover::-webkit-slider-thumb {
-		background: linear-gradient(180deg, #7a7a7a 0%, #6a6a6a 100%);
-		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
-	}
-
-	.control-group input[type='range']:hover::-moz-range-thumb {
-		background: linear-gradient(180deg, #7a7a7a 0%, #6a6a6a 100%);
-		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
 	}
 
 	@media (max-width: 768px) {

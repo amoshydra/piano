@@ -1,20 +1,30 @@
 <script lang="ts">
-	import { volume } from '$lib/store';
+	import { scale, volume } from '$lib/store';
 
 	let currentVolume = $state(0.2);
+	let currentScale = $state(1);
 
 	$effect(() => {
 		volume.set(currentVolume);
+	});
+
+	$effect(() => {
+		scale.set(currentScale);
 	});
 
 	function handleVolumeChange(e: Event): void {
 		const target = e.target as HTMLInputElement;
 		currentVolume = parseFloat(target.value);
 	}
+
+	function handleScaleChange(e: Event): void {
+		const target = e.target as HTMLInputElement;
+		currentScale = parseFloat(target.value);
+	}
 </script>
 
 <div class="controls">
-	<div class="control-group">
+	<div class="control-group volume-control">
 		<div class="volume-icon">
 			{#if currentVolume < 0.1}
 				<svg
@@ -66,6 +76,34 @@
 		/>
 		<span class="volume-value">{Math.round(currentVolume * 100)}%</span>
 	</div>
+	<div class="control-group scale-control">
+		<div class="scale-icon">
+			<svg
+				width="20"
+				height="20"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+			>
+				<circle cx="11" cy="11" r="8" />
+				<path d="M21 21l-4.35-4.35" />
+				<path d="M8 11h6" />
+				<path d="M11 8v6" />
+			</svg>
+		</div>
+		<input
+			id="scale"
+			type="range"
+			min="0.5"
+			max="2"
+			step="0.1"
+			bind:value={currentScale}
+			oninput={handleScaleChange}
+			aria-label="Scale control"
+		/>
+		<span class="scale-value">{Math.round(currentScale * 100)}%</span>
+	</div>
 </div>
 
 <style>
@@ -85,7 +123,8 @@
 		border-radius: 50px;
 	}
 
-	.volume-icon {
+	.volume-icon,
+	.scale-icon {
 		color: #666;
 		display: flex;
 		align-items: center;
@@ -138,7 +177,8 @@
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 	}
 
-	.volume-value {
+	.volume-value,
+	.scale-value {
 		font-size: 0.875rem;
 		font-weight: 600;
 		color: #1a1a2e;
@@ -158,7 +198,8 @@
 			width: 200px;
 		}
 
-		.volume-value {
+		.volume-value,
+		.scale-value {
 			font-size: 0.8125rem;
 		}
 	}
@@ -191,12 +232,14 @@
 			border-width: 2.5px;
 		}
 
-		.volume-icon svg {
+		.volume-icon svg,
+		.scale-icon svg {
 			width: 16px;
 			height: 16px;
 		}
 
-		.volume-value {
+		.volume-value,
+		.scale-value {
 			font-size: 0.75rem;
 			min-width: 40px;
 		}
