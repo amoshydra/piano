@@ -7,6 +7,17 @@ export interface PianoKey {
 }
 
 export const defaultKeys: PianoKey[] = [
+	{ note: 'G', key: '', color: 'white', octave: 2 },
+	{ note: 'G#', key: '', color: 'black', octave: 2 },
+	{ note: 'A', key: '', color: 'white', octave: 2 },
+	{ note: 'A#', key: '', color: 'black', octave: 2 },
+	{ note: 'B', key: '', color: 'white', octave: 2 },
+	{ note: 'C', key: '', color: 'white', octave: 3 },
+	{ note: 'C#', key: '', color: 'black', octave: 3 },
+	{ note: 'D', key: '', color: 'white', octave: 3 },
+	{ note: 'D#', key: '', color: 'black', octave: 3 },
+	{ note: 'E', key: '', color: 'white', octave: 3 },
+	{ note: 'F', key: '', color: 'white', octave: 3 },
 	{ note: 'F#', key: '`', color: 'black', octave: 3 },
 	{ note: 'G', key: 'tab', color: 'white', octave: 3 },
 	{ note: 'G#', key: '1', color: 'black', octave: 3 },
@@ -31,7 +42,17 @@ export const defaultKeys: PianoKey[] = [
 	{ note: 'D#', key: '=', color: 'black', octave: 5 },
 	{ note: 'E', key: ']', color: 'white', octave: 5 },
 	{ note: 'F', key: '\\', color: 'white', octave: 5 },
-	{ note: 'F#', key: 'backspace', color: 'black', octave: 5 }
+	{ note: 'F#', key: 'backspace', color: 'black', octave: 5 },
+	{ note: 'G', key: '', color: 'white', octave: 5 },
+	{ note: 'G#', key: '', color: 'black', octave: 5 },
+	{ note: 'A', key: '', color: 'white', octave: 5 },
+	{ note: 'A#', key: '', color: 'black', octave: 5 },
+	{ note: 'B', key: '', color: 'white', octave: 5 },
+	{ note: 'C', key: '', color: 'white', octave: 6 },
+	{ note: 'C#', key: '', color: 'black', octave: 6 },
+	{ note: 'D', key: '', color: 'white', octave: 6 },
+	{ note: 'D#', key: '', color: 'black', octave: 6 },
+	{ note: 'E', key: '', color: 'white', octave: 6 }
 ];
 
 export function getKeyId(key: PianoKey, index: number): string {
