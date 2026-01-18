@@ -5,7 +5,6 @@
 		note: string;
 		octave: number;
 		color: 'white' | 'black';
-		width?: string;
 		isActive?: boolean;
 		onPointerDown?: () => void;
 		onPointerUp?: () => void;
@@ -15,7 +14,6 @@
 		note,
 		octave,
 		color,
-		width = '2rem',
 		isActive = false,
 		onPointerDown,
 		onPointerUp
@@ -66,7 +64,6 @@
 <div
 	bind:this={element}
 	class="key {color}-key {isActive ? 'active' : ''}"
-	style="--key-width: {width}"
 	onpointerdown={onPointerDown}
 	onpointerup={onPointerUp}
 	onpointerleave={onPointerUp}
@@ -81,13 +78,16 @@
 
 <style>
 	.key {
+		font-size: clamp(0.325em, 1.5vw, 1rem);
+		--key-width: 4em;
+
 		cursor: pointer;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		font-weight: bold;
 		user-select: none;
-		height: 10rem;
+		height: 20em;
 		width: var(--key-width);
 		transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 		touch-action: none;
@@ -123,7 +123,8 @@
 	}
 
 	.white-key .note-name {
-		font-size: 0.875rem;
+		font-size: 1.5em;
+		font-family: monospace;
 		padding-bottom: 0.75rem;
 		font-weight: 600;
 		letter-spacing: 0.5px;
@@ -166,7 +167,7 @@
 		display: block;
 		transform: translateX(-50%);
 		width: calc(0.8 * var(--key-width));
-		height: 6.5rem;
+		height: 13em;
 		border-radius: 0 0 4px 4px;
 		box-shadow:
 			0 6px 12px rgba(0, 0, 0, 0.3),
@@ -190,26 +191,6 @@
 			inset 0 -1px 2px rgba(0, 0, 0, 0.15),
 			inset 0 1px 2px rgba(255, 255, 255, 0.05);
 		transform: translateX(-50%) translateY(2px);
-	}
-
-	@media (max-width: 640px) {
-		.key {
-			height: 7rem;
-		}
-
-		.white-key {
-			border-radius: 0 0 4px 4px;
-		}
-
-		.black-key::after {
-			height: 4.5rem;
-			border-radius: 0 0 3px 3px;
-		}
-
-		.white-key .note-name {
-			font-size: 0.75rem;
-			padding-bottom: 0.5rem;
-		}
 	}
 
 	@media (hover: hover) {

@@ -33,16 +33,10 @@
 	<main class="main">
 		<section class="recording-section">
 			<RecordButton />
+			<PianoControls />
 		</section>
 
 		<section class="piano-section">
-			<div class="piano-header">
-				<div class="piano-title">
-					<span class="emoji">🎹</span>
-					<h2>Virtual Piano</h2>
-				</div>
-				<PianoControls />
-			</div>
 			<Piano />
 		</section>
 
@@ -57,6 +51,9 @@
 </div>
 
 <style>
+	:global(body) {
+		margin: 0;
+	}
 	.mobile-layout {
 		display: flex;
 		flex-direction: column;
@@ -125,44 +122,6 @@
 	.recording-section {
 		display: flex;
 		justify-content: center;
-	}
-
-	.piano-section {
-		background: rgba(255, 255, 255, 0.95);
-		backdrop-filter: blur(20px);
-		border-radius: 20px;
-		padding: 2rem;
-		box-shadow:
-			0 20px 40px rgba(0, 0, 0, 0.15),
-			0 8px 16px rgba(0, 0, 0, 0.1);
-		border: 1px solid rgba(255, 255, 255, 0.3);
-	}
-
-	.piano-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 1.5rem;
-		flex-wrap: wrap;
-		gap: 1rem;
-	}
-
-	.piano-title {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.piano-title .emoji {
-		font-size: 2rem;
-	}
-
-	.piano-title h2 {
-		font-size: 1.5rem;
-		font-weight: 600;
-		margin: 0;
-		color: #1a1a2e;
-		letter-spacing: -0.5px;
 	}
 
 	.recordings-section {
