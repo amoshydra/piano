@@ -24,21 +24,21 @@ pnpm lint             # Run Prettier + ESLint checks
 ### Testing
 
 ```bash
-pnpm test             # Run all E2E tests
-pnpm test:e2e        # Run Playwright tests (same as above)
+pnpm test             # Run all unit tests (Vitest)
+pnpm test:e2e        # Run Playwright tests
 ```
 
-**Running single tests:** Playwright tests don't have a direct single-test flag, but you can:
+**Running single tests:**
 
-- Use `.only` on specific test in `e2e/*.test.ts` files temporarily
-- Filter tests: `npx playwright test --grep "test name pattern"`
+- Unit: `npx vitest run -t "test name"`
+- E2E: `npx playwright test --grep "test name pattern"`
 
 ## Code Style Guidelines
 
 ### Import Conventions
 
 - Use SvelteKit path aliases: `$lib/`, `$components/`, `$routes/`
-- Svelte 5 imports: `import { onMount } from 'svelte'` (no `type` keyword needed)
+- Svelte 5 imports: `import { onMount } from 'svelte'` (no `type` keyword)
 - Store imports: Use `type` for store types when needed
 - External libraries: ES module syntax preferred
 
@@ -47,10 +47,6 @@ pnpm test:e2e        # Run Playwright tests (same as above)
 import { onMount } from 'svelte';
 import { writable, type Writable } from 'svelte/store';
 import { audioEngine } from '$lib/audio';
-
-// ❌ Bad
-import { onMount } from 'svelte';
-import * as Svelte from 'svelte';
 ```
 
 ### Formatting Rules
@@ -61,7 +57,7 @@ Prettier configuration (`.prettierrc`):
 - **Single quotes** for strings
 - **No trailing commas**
 - Print width: 100 characters
-- Semi-colons: ASI style (inserted where needed)
+- Semi-colons: ASI style
 
 Run `pnpm format` before committing.
 
@@ -86,11 +82,6 @@ function handleKeyDown(e: KeyboardEvent): void {
 	if (!key) return;
 	const frequency = audioEngine.getFrequency(note, octave);
 }
-
-// ❌ Bad
-function handleKeyDown(e) {
-	const frequency = audioEngine.getFrequency(note, octave);
-}
 ```
 
 ### Naming Conventions
@@ -108,13 +99,6 @@ function handleKeyDown(e) {
 export class AudioEngine {
 	private context: AudioContext | null = null;
 	public playNote(frequency: number, id: string): void {}
-}
-
-export const isRecording: Writable<boolean> = writable(false);
-
-// ❌ Bad
-export class audio_engine {
-	private Context: AudioContext;
 }
 ```
 
@@ -137,11 +121,6 @@ $effect(() => {
 		currentRecording.set({ ...recording });
 	}
 });
-
-// ❌ Old patterns (avoid)
-export let note: string;
-let isActive = false;
-const activeKeys = derived(activeNotes, ($activeNotes) => [...]);
 ```
 
 ### Error Handling
@@ -171,11 +150,6 @@ try {
 } catch (e) {
 	console.error('Error loading recordings:', e);
 }
-
-// ❌ Bad - No SSR check
-constructor() {
-	this.context = new (window.AudioContext || window.webkitAudioContext)();
-}
 ```
 
 ### Web Audio API Guidelines
@@ -195,7 +169,6 @@ async resume(): Promise<void> {
 
 playNote(frequency: number, id: string): void {
 	if (!id || !this.context) return; // Guard check
-
 	const oscillator = this.context.createOscillator();
 	oscillator.stop(this.context.currentTime + 1); // Auto-cleanup
 }
@@ -213,28 +186,12 @@ playNote(frequency: number, id: string): void {
 	import { onMount } from 'svelte';
 	import { audioEngine } from '$lib/audio';
 
-	let element: HTMLDivElement;
-
-	onMount(() => {
-		if (!element) return;
-		element.addEventListener('pointerdown', handlePointerDown);
-		return () => {
-			element.removeEventListener('pointerdown', handlePointerDown);
-		};
-	});
-
 	function handleTouchStart(e: TouchEvent): void {
-		e.preventDefault(); // Prevent default touch behavior
+		e.preventDefault();
 	}
 </script>
 
-<div
-	bind:this={element}
-	role="button"
-	aria-label="Play note"
-	ontouchstart={handleTouchStart}
-	style="touch-action: none;"
->
+<div role="button" aria-label="Play note" ontouchstart={handleTouchStart}>
 	<span class="note-name">{note}</span>
 </div>
 ```
@@ -269,7 +226,7 @@ playNote(frequency: number, id: string): void {
 2. Run `pnpm format` to format code
 3. Run `pnpm lint` to check for errors
 4. Run `pnpm check` for type safety
-5. Test manually with `pnpm dev`
+5. Test manually in existing dev session
 6. Commit changes using conventional commit format
 
 ## Conventional Commits
@@ -278,10 +235,6 @@ playNote(frequency: number, id: string): void {
 
 ```
 <type>[optional scope]: <description>
-
-[optional body]
-
-[optional footer(s)]
 ```
 
 **Types:**
