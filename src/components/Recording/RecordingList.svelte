@@ -1,15 +1,14 @@
 <script lang="ts">
 	import { recordings, type Recording } from '$lib/store';
 	import PlaybackControls from './PlaybackControls.svelte';
-	import { deleteRecording } from '$lib/recorder';
+	import { deleteRecording, importRecording, downloadRecording } from '$lib/recorder';
 
 	interface Props {
 		expanded?: boolean;
 	}
 
 	let { expanded = false }: Props = $props();
-	const initialValue = expanded;
-	let showList = $state(initialValue);
+	let showList = $state(expanded);
 	let editingId: string | null = $state(null);
 	let editingName: string = $state('');
 
@@ -52,6 +51,45 @@
 	function cancelRename(): void {
 		editingId = null;
 		editingName = '';
+	}
+
+	function autofocus(node: HTMLInputElement) {
+		node.focus();
+		return {};
+	}
+
+	function handleExportRecording(recording: Recording): void {
+		downloadRecording(recording);
+	}
+
+	function handleImport(): void {
+		const input = document.createElement('input');
+		input.type = 'file';
+		input.accept = '.json';
+		input.onchange = (e) => {
+			const file = (e.target as HTMLInputElement).files?.[0];
+			if (!file) return;
+
+			const reader = new FileReader();
+			reader.onload = (event) => {
+				try {
+					const jsonData = event.target?.result as string;
+					const result = importRecording(jsonData);
+
+					if (result.success) {
+						alert(result.message);
+						// Refresh the recordings list
+						recordings.update((current) => [...current]);
+					} else {
+						alert(`Import failed: ${result.message}`);
+					}
+				} catch (e) {
+					alert('Failed to read file. Please check the file format.');
+				}
+			};
+			reader.readAsText(file);
+		};
+		input.click();
 	}
 
 	function formatDuration(ms: number): string {
@@ -112,7 +150,7 @@
 													if (e.key === 'Escape') cancelRename();
 												}}
 												onblur={() => saveRename(recording.id)}
-												autofocus
+												use:autofocus
 												placeholder="Recording name"
 											/>
 										</div>
@@ -145,6 +183,24 @@
 										</svg>
 									</button>
 								{:else}
+									<button
+										class="export-button"
+										onclick={() => handleExportRecording(recording)}
+										aria-label="Export recording"
+									>
+										<svg
+											width="20"
+											height="20"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+										>
+											<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+											<polyline points="7,10 12,15 17,10" />
+											<line x1="12" y1="15" x2="12" y2="3" />
+										</svg>
+									</button>
 									<button
 										class="rename-button"
 										onclick={() => startEditing(recording)}
@@ -186,10 +242,19 @@
 					{/each}
 				</div>
 			{/if}
+			{#if showList}
+				<button class="import-button-float" onclick={handleImport} aria-label="Import recording">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+						<polyline points="17,8 12,3 7,8" />
+						<line x1="12" y1="3" x2="12" y2="15" />
+					</svg>
+					<span>Import</span>
+				</button>
+			{/if}
 		</div>
 	{/if}
 </div>
-
 <style>
 	.recordings-container {
 		width: 100%;
@@ -470,7 +535,78 @@
 		transform: scale(0.95);
 	}
 
+	.export-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		background: rgba(13, 110, 253, 0.1);
+		border: 1px solid rgba(13, 110, 253, 0.2);
+		color: #0d6efd;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		font-size: 1rem;
+	}
+
+	.export-button:hover {
+		background: rgba(13, 110, 253, 0.9);
+		border-color: #0d6efd;
+		color: white;
+		transform: scale(1.05);
+	}
+
+	.export-button:active {
+		transform: scale(0.95);
+	}
+
+	.import-button-float {
+		position: fixed;
+		bottom: 2rem;
+		right: 2rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.75rem 1rem;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		color: white;
+		border: none;
+		border-radius: 50px;
+		cursor: pointer;
+		font-size: 0.875rem;
+		font-weight: 600;
+		box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		z-index: 1000;
+	}
+
+	.import-button-float:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+	}
+
+	.import-button-float:active {
+		transform: translateY(0);
+	}
+
 	@media (max-width: 768px) {
+		.import-export-buttons {
+			gap: 0.5rem;
+		}
+
+		.import-button,
+		.export-button {
+			padding: 0.5rem 0.75rem;
+			font-size: 0.8125rem;
+		}
+
+		.import-button svg,
+		.export-button svg {
+			width: 18px;
+			height: 18px;
+		}
+
 		.toggle-button {
 			padding: 0.875rem 1rem;
 			font-size: 0.9375rem;
@@ -572,6 +708,18 @@
 		.rename-input {
 			padding: 0.375rem;
 			font-size: 0.875rem;
+		}
+
+		.import-button-float {
+			bottom: 1rem;
+			right: 1rem;
+			padding: 0.625rem 0.875rem;
+			font-size: 0.8125rem;
+		}
+
+		.import-button-float svg {
+			width: 18px;
+			height: 18px;
 		}
 	}
 </style>

@@ -1,7 +1,6 @@
 import { derived, writable, type Writable } from 'svelte/store';
 
 export interface Note {
-	id: string;
 	note: string;
 	octave: number;
 	frequency: number;
@@ -13,8 +12,6 @@ export interface Recording {
 	id: string;
 	name: string;
 	notes: Note[];
-	startTime: number;
-	endTime: number;
 	duration: number;
 	createdAt: number;
 }
@@ -49,7 +46,7 @@ export const playbackProgress = derived(
 	[currentRecording, isPlaying],
 	([$currentRecording, $isPlaying]) => {
 		if (!$currentRecording || !$isPlaying) return 0;
-		const now = Date.now();
-		return Math.min(1, (now - $currentRecording.startTime) / $currentRecording.duration);
+		// Progress is now handled in PlaybackControls component
+		return 0;
 	}
 );
