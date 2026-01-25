@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { recordings } from '$lib/store';
+	import { recordings, type Recording } from '$lib/store';
 	import PlaybackControls from './PlaybackControls.svelte';
 	import { deleteRecording } from '$lib/recorder';
 
@@ -10,6 +10,8 @@
 	let { expanded = false }: Props = $props();
 	const initialValue = expanded;
 	let showList = $state(initialValue);
+	let editingId: string | null = $state(null);
+	let editingName: string = $state('');
 
 	function toggleList(): void {
 		showList = !showList;
@@ -19,6 +21,37 @@
 		if (confirm('Are you sure you want to delete this recording?')) {
 			deleteRecording(id);
 		}
+	}
+
+	function startEditing(recording: Recording): void {
+		editingId = recording.id;
+		editingName = recording.name;
+	}
+
+	function saveRename(id: string): void {
+		if (editingName.trim() === '') return;
+
+		const currentRecordings = $recordings;
+		const updatedRecordings = currentRecordings.map((rec) =>
+			rec.id === id ? { ...rec, name: editingName.trim() } : rec
+		);
+
+		recordings.set(updatedRecordings);
+
+		// Save to localStorage
+		try {
+			localStorage.setItem('piano-recordings', JSON.stringify(updatedRecordings));
+		} catch (e) {
+			console.error('Error saving renamed recording:', e);
+		}
+
+		editingId = null;
+		editingName = '';
+	}
+
+	function cancelRename(): void {
+		editingId = null;
+		editingName = '';
 	}
 
 	function formatDuration(ms: number): string {
@@ -68,7 +101,24 @@
 							<div class="recording-header">
 								<div class="recording-icon">🎹</div>
 								<div class="recording-info">
-									<h3 class="recording-name">{recording.name}</h3>
+									{#if editingId === recording.id}
+										<div class="rename-input-container">
+											<input
+												type="text"
+												class="rename-input"
+												bind:value={editingName}
+												onkeydown={(e) => {
+													if (e.key === 'Enter') saveRename(recording.id);
+													if (e.key === 'Escape') cancelRename();
+												}}
+												onblur={() => saveRename(recording.id)}
+												autofocus
+												placeholder="Recording name"
+											/>
+										</div>
+									{:else}
+										<h3 class="recording-name">{recording.name}</h3>
+									{/if}
 									<div class="recording-meta">
 										<span class="duration">⏱ {formatDuration(recording.duration)}</span>
 										<span class="date">{formatDate(recording.createdAt)}</span>
@@ -77,6 +127,42 @@
 							</div>
 							<div class="recording-actions">
 								<PlaybackControls {recording} />
+								{#if editingId === recording.id}
+									<button
+										class="save-button"
+										onclick={() => saveRename(recording.id)}
+										aria-label="Save name"
+									>
+										<svg
+											width="20"
+											height="20"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+										>
+											<path d="M20 6L9 17l-5-5" />
+										</svg>
+									</button>
+								{:else}
+									<button
+										class="rename-button"
+										onclick={() => startEditing(recording)}
+										aria-label="Rename recording"
+									>
+										<svg
+											width="20"
+											height="20"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+										>
+											<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+											<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+										</svg>
+									</button>
+								{/if}
 								<button
 									class="delete-button"
 									onclick={() => handleDelete(recording.id)}
@@ -281,6 +367,33 @@
 		gap: 0.5rem;
 	}
 
+	.rename-input-container {
+		width: 100%;
+	}
+
+	.rename-input {
+		width: 100%;
+		padding: 0.5rem;
+		background: rgba(255, 255, 255, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		border-radius: 6px;
+		color: white;
+		font-size: 0.9375rem;
+		font-weight: 600;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		outline: none;
+	}
+
+	.rename-input:focus {
+		background: rgba(255, 255, 255, 0.15);
+		border-color: rgba(102, 126, 234, 0.6);
+		box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+	}
+
+	.rename-input::placeholder {
+		color: rgba(255, 255, 255, 0.5);
+	}
+
 	.delete-button {
 		display: flex;
 		align-items: center;
@@ -304,6 +417,56 @@
 	}
 
 	.delete-button:active {
+		transform: scale(0.95);
+	}
+
+	.rename-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		background: rgba(40, 167, 69, 0.1);
+		border: 1px solid rgba(40, 167, 69, 0.2);
+		color: #28a745;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		font-size: 1rem;
+	}
+
+	.rename-button:hover {
+		background: rgba(40, 167, 69, 0.9);
+		border-color: #28a745;
+		color: white;
+		transform: scale(1.05);
+	}
+
+	.rename-button:active {
+		transform: scale(0.95);
+	}
+
+	.save-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		background: rgba(40, 167, 69, 0.9);
+		border: 1px solid #28a745;
+		color: white;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		font-size: 1rem;
+	}
+
+	.save-button:hover {
+		background: #28a745;
+		transform: scale(1.05);
+	}
+
+	.save-button:active {
 		transform: scale(0.95);
 	}
 
@@ -398,6 +561,17 @@
 		.delete-button {
 			width: 28px;
 			height: 28px;
+		}
+
+		.rename-button,
+		.save-button {
+			width: 28px;
+			height: 28px;
+		}
+
+		.rename-input {
+			padding: 0.375rem;
+			font-size: 0.875rem;
 		}
 	}
 </style>

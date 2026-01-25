@@ -29,6 +29,16 @@
 		const keyIndex = findKeyByKeyCode(e.key, keys);
 		if (keyIndex < 0) return;
 
+		// Don't prevent default if user is typing in an input or textarea
+		const target = e.target as HTMLElement;
+		if (
+			target.tagName === 'INPUT' ||
+			target.tagName === 'TEXTAREA' ||
+			target.contentEditable === 'true'
+		) {
+			return;
+		}
+
 		// Prevent default behavior for all valid piano keys to avoid browser interference
 		if (e.ctrlKey || e.metaKey || e.altKey) {
 			return;

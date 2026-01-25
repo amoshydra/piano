@@ -10,6 +10,7 @@
 	let { recording }: Props = $props();
 
 	let playbackTimeout: ReturnType<typeof setTimeout> | null = null;
+	let noteTimeouts: ReturnType<typeof setTimeout>[] = [];
 
 	$effect(() => {
 		if (recording) {
@@ -25,6 +26,10 @@
 			return;
 		}
 
+		// Clear any existing timeouts
+		noteTimeouts.forEach((timeout) => clearTimeout(timeout));
+		noteTimeouts = [];
+
 		await audioEngine.resume();
 		currentPlayingRecordingId.set(recording.id);
 		isPlaying.set(true);
@@ -35,11 +40,14 @@
 				audioEngine.playNote(note.frequency, id);
 
 				if (note.duration) {
-					setTimeout(() => {
+					const stopTimeout = setTimeout(() => {
 						audioEngine.stopNote(id);
 					}, note.duration);
+					noteTimeouts.push(stopTimeout);
 				}
 			}, note.timestamp);
+
+			noteTimeouts.push(timeoutId);
 
 			const currentMax = note.timestamp + (note.duration || 500);
 			if (!playbackTimeout || currentMax > Number(playbackTimeout)) {
@@ -51,6 +59,7 @@
 			setTimeout(() => {
 				isPlaying.set(false);
 				currentPlayingRecordingId.set(null);
+				noteTimeouts = [];
 			}, recording.duration);
 		}
 	}
@@ -58,10 +67,19 @@
 	function stopPlayback(): void {
 		isPlaying.set(false);
 		currentPlayingRecordingId.set(null);
+
+		// Clear all note timeouts
+		noteTimeouts.forEach((timeout) => clearTimeout(timeout));
+		noteTimeouts = [];
+
+		// Clear main playback timeout
 		if (playbackTimeout) {
 			clearTimeout(playbackTimeout);
 			playbackTimeout = null;
 		}
+
+		// Stop all currently playing notes
+		audioEngine.destroy();
 	}
 </script>
 
