@@ -3,8 +3,11 @@ import type { PianoKey } from './piano.js';
 export class AudioEngine {
 	private context: AudioContext | null = null;
 	private activeOscillators: Map<string, OscillatorNode[]> = new Map();
+	private activeGainNodes: Map<string, GainNode[]> = new Map();
 	private masterGain: GainNode | null = null;
-	private volume: number = 0.5;
+	private volume: number = 0.8;
+	private releaseTime: number = 1.5; // Realistic piano release time in seconds
+	private sustainTime: number = 0.5; // Natural decay while key is held
 
 	constructor() {
 		if (typeof window !== 'undefined') {
@@ -25,11 +28,31 @@ export class AudioEngine {
 		}
 	}
 
+	private cancelRelease(id: string): void {
+		if (!id || !this.context) return;
+
+		const oscillators = this.activeOscillators.get(id);
+		const gainNodes = this.activeGainNodes.get(id);
+
+		if (oscillators && gainNodes) {
+			oscillators.forEach((oscillator, index) => {
+				const gainNode = gainNodes[index];
+				if (gainNode && oscillator) {
+					// Cancel any scheduled gain ramps for immediate retrigger
+					gainNode.gain.cancelScheduledValues(this.context!.currentTime);
+				}
+			});
+		}
+	}
+
 	playNote(frequency: number, id: string): void {
 		if (!id || !this.context || !this.masterGain) return;
 
 		if (!this.activeOscillators.has(id)) {
 			this.activeOscillators.set(id, []);
+		}
+		if (!this.activeGainNodes.has(id)) {
+			this.activeGainNodes.set(id, []);
 		}
 
 		const oscillator = this.context.createOscillator();
@@ -40,45 +63,56 @@ export class AudioEngine {
 		const pianoWave = this.context.createPeriodicWave(real, imag);
 		oscillator.setPeriodicWave(pianoWave);
 
+		// oscillator.type = 'sine';
 		oscillator.frequency.setValueAtTime(frequency, this.context.currentTime);
 
-		gainNode.gain.setValueAtTime(this.volume, this.context.currentTime);
-		gainNode.gain.exponentialRampToValueAtTime(this.volume * 0.5, this.context.currentTime + 0.01);
-		gainNode.gain.exponentialRampToValueAtTime(0.0001, this.context.currentTime + 1);
+		// Simple clean envelope (like old implementation)
+		gainNode.gain.setValueAtTime(this.volume * 0.4, this.context.currentTime);
+		gainNode.gain.exponentialRampToValueAtTime(
+			0.0001,
+			this.context.currentTime + this.sustainTime + 0.5
+		);
 
 		oscillator.connect(gainNode);
 		gainNode.connect(this.masterGain);
 
 		oscillator.start(this.context.currentTime);
-		oscillator.stop(this.context.currentTime + 1);
+		oscillator.stop(this.context.currentTime + this.sustainTime + 0.5);
 
 		const oscillators = this.activeOscillators.get(id) || [];
+		const gainNodes = this.activeGainNodes.get(id) || [];
 		oscillators.push(oscillator);
+		gainNodes.push(gainNode);
 		this.activeOscillators.set(id, oscillators);
+		this.activeGainNodes.set(id, gainNodes);
 
 		oscillator.onended = () => {
 			const currentOscillators = this.activeOscillators.get(id) || [];
-			const filtered = currentOscillators.filter((osc) => osc !== oscillator);
-			if (filtered.length === 0) {
+			const currentGainNodes = this.activeGainNodes.get(id) || [];
+			const filteredOscs = currentOscillators.filter((osc) => osc !== oscillator);
+			const filteredGains = currentGainNodes.filter((gain) => gain !== gainNode);
+
+			if (filteredOscs.length === 0) {
 				this.activeOscillators.delete(id);
+				this.activeGainNodes.delete(id);
 			} else {
-				this.activeOscillators.set(id, filtered);
+				this.activeOscillators.set(id, filteredOscs);
+				this.activeGainNodes.set(id, filteredGains);
 			}
 		};
 	}
 
 	stopNote(id: string): void {
 		if (!id || !this.context) return;
+
 		const oscillators = this.activeOscillators.get(id);
-		if (oscillators) {
-			oscillators.forEach((osc) => {
-				try {
-					osc.stop(this.context!.currentTime);
-				} catch (e) {
-					console.error('Error stopping oscillator:', e);
-				}
-			});
+		const gainNodes = this.activeGainNodes.get(id);
+
+		if (oscillators && gainNodes) {
+			// Simple release - just let the natural envelope handle it
+			// Oscillators will stop automatically due to scheduled stop time
 			this.activeOscillators.delete(id);
+			this.activeGainNodes.delete(id);
 		}
 	}
 
@@ -87,6 +121,22 @@ export class AudioEngine {
 		if (this.masterGain && this.context) {
 			this.masterGain.gain.setValueAtTime(this.volume, this.context.currentTime);
 		}
+	}
+
+	setReleaseTime(releaseTime: number): void {
+		this.releaseTime = Math.max(0.1, Math.min(5, releaseTime));
+	}
+
+	getReleaseTime(): number {
+		return this.releaseTime;
+	}
+
+	setSustainTime(sustainTime: number): void {
+		this.sustainTime = Math.max(0.1, Math.min(3, sustainTime));
+	}
+
+	getSustainTime(): number {
+		return this.sustainTime;
 	}
 
 	getVolume(): number {
@@ -121,6 +171,7 @@ export class AudioEngine {
 			});
 		});
 		this.activeOscillators.clear();
+		this.activeGainNodes.clear();
 	}
 }
 

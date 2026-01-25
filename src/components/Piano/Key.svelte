@@ -17,16 +17,11 @@
 	onMount(() => {
 		if (!element) return;
 
-		element.addEventListener('pointerdown', handlePointerDown);
-		element.addEventListener('pointerup', handlePointerUp);
-		element.addEventListener('pointerleave', handlePointerUp);
+		// Only handle touch events here, pointer events are handled by Svelte event handlers
 		element.addEventListener('touchstart', handleTouchStart, { passive: false });
 		element.addEventListener('touchend', handleTouchEnd);
 
 		return () => {
-			element.removeEventListener('pointerdown', handlePointerDown);
-			element.removeEventListener('pointerup', handlePointerUp);
-			element.removeEventListener('pointerleave', handlePointerUp);
 			element.removeEventListener('touchstart', handleTouchStart);
 			element.removeEventListener('touchend', handleTouchEnd);
 		};
@@ -57,11 +52,9 @@
 <div
 	bind:this={element}
 	class="key {color}-key {isActive ? 'active' : ''}"
-	onpointerdown={onPointerDown}
-	onpointerup={onPointerUp}
-	onpointerleave={onPointerUp}
-	ontouchstart={handleTouchStart}
-	ontouchend={handleTouchEnd}
+	onpointerdown={handlePointerDown}
+	onpointerup={handlePointerUp}
+	onpointerleave={handlePointerUp}
 	role="button"
 	aria-label="{note} {octave}"
 >
