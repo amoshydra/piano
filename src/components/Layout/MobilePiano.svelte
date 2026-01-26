@@ -36,7 +36,7 @@
 			'Open Sans',
 			'Helvetica Neue',
 			sans-serif;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+		background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 50%, #2d3748 100%);
 		background-attachment: fixed;
 		height: 100%;
 	}

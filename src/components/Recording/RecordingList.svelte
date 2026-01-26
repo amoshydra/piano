@@ -66,8 +66,8 @@
 		const input = document.createElement('input');
 		input.type = 'file';
 		input.accept = '.json';
-		input.onchange = (e) => {
-			const file = (e.target as HTMLInputElement).files?.[0];
+		input.onchange = () => {
+			const file = input.files?.[0];
 			if (!file) return;
 
 			const reader = new FileReader();
@@ -83,7 +83,7 @@
 					} else {
 						alert(`Import failed: ${result.message}`);
 					}
-				} catch (e) {
+				} catch {
 					alert('Failed to read file. Please check the file format.');
 				}
 			};
@@ -244,7 +244,14 @@
 			{/if}
 			{#if showList}
 				<button class="import-button-float" onclick={handleImport} aria-label="Import recording">
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<svg
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
 						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
 						<polyline points="17,8 12,3 7,8" />
 						<line x1="12" y1="3" x2="12" y2="15" />
@@ -255,6 +262,7 @@
 		</div>
 	{/if}
 </div>
+
 <style>
 	.recordings-container {
 		width: 100%;
@@ -266,10 +274,10 @@
 		align-items: center;
 		gap: 0.75rem;
 		padding: 1rem 1.25rem;
-		background: rgba(255, 255, 255, 0.15);
+		background: rgba(255, 255, 255, 0.25);
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
-		border: 2px solid rgba(255, 255, 255, 0.3);
+		border: 2px solid rgba(255, 255, 255, 0.4);
 		border-radius: 12px;
 		cursor: pointer;
 		font-weight: 600;
@@ -278,16 +286,16 @@
 		text-align: left;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		box-shadow:
-			0 2px 8px rgba(0, 0, 0, 0.05),
+			0 2px 8px rgba(0, 0, 0, 0.1),
 			inset 0 1px 2px rgba(255, 255, 255, 0.1);
 	}
 
 	.toggle-button:hover {
-		background: rgba(255, 255, 255, 0.25);
-		border-color: rgba(255, 255, 255, 0.4);
+		background: rgba(255, 255, 255, 0.35);
+		border-color: rgba(255, 255, 255, 0.5);
 		transform: translateY(-1px);
 		box-shadow:
-			0 4px 12px rgba(0, 0, 0, 0.08),
+			0 4px 12px rgba(0, 0, 0, 0.15),
 			inset 0 1px 2px rgba(255, 255, 255, 0.15);
 	}
 
@@ -297,7 +305,7 @@
 
 	.toggle-icon {
 		font-size: 0.875rem;
-		color: #667eea;
+		color: white;
 		transition: transform 0.3s ease;
 	}
 
@@ -307,7 +315,7 @@
 	}
 
 	.toggle-count {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
 		color: white;
 		padding: 0.25rem 0.625rem;
 		border-radius: 20px;
@@ -356,10 +364,10 @@
 	}
 
 	.recording-card {
-		background: rgba(255, 255, 255, 0.15);
+		background: rgba(255, 255, 255, 0.25);
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
-		border: 1px solid rgba(255, 255, 255, 0.2);
+		border: 1px solid rgba(255, 255, 255, 0.3);
 		border-radius: 12px;
 		padding: 1rem;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -369,8 +377,8 @@
 	}
 
 	.recording-card:hover {
-		background: rgba(255, 255, 255, 0.25);
-		border-color: rgba(255, 255, 255, 0.3);
+		background: rgba(255, 255, 255, 0.35);
+		border-color: rgba(255, 255, 255, 0.4);
 		transform: translateY(-2px);
 		box-shadow:
 			0 8px 24px rgba(0, 0, 0, 0.12),
@@ -386,7 +394,7 @@
 
 	.recording-icon {
 		font-size: 1.5rem;
-		background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+		background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
 		width: 48px;
 		height: 48px;
 		display: flex;
@@ -465,9 +473,9 @@
 		justify-content: center;
 		width: 36px;
 		height: 36px;
-		background: rgba(220, 53, 69, 0.1);
-		border: 1px solid rgba(220, 53, 69, 0.2);
-		color: #dc3545;
+		background: rgba(220, 53, 69, 0.4);
+		border: 1px solid rgba(220, 53, 69, 0.5);
+		color: white;
 		border-radius: 8px;
 		cursor: pointer;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -491,9 +499,9 @@
 		justify-content: center;
 		width: 36px;
 		height: 36px;
-		background: rgba(40, 167, 69, 0.1);
-		border: 1px solid rgba(40, 167, 69, 0.2);
-		color: #28a745;
+		background: rgba(40, 167, 69, 0.4);
+		border: 1px solid rgba(40, 167, 69, 0.5);
+		color: white;
 		border-radius: 8px;
 		cursor: pointer;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -541,9 +549,9 @@
 		justify-content: center;
 		width: 36px;
 		height: 36px;
-		background: rgba(13, 110, 253, 0.1);
-		border: 1px solid rgba(13, 110, 253, 0.2);
-		color: #0d6efd;
+		background: rgba(13, 110, 253, 0.4);
+		border: 1px solid rgba(13, 110, 253, 0.5);
+		color: white;
 		border-radius: 8px;
 		cursor: pointer;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -569,21 +577,21 @@
 		align-items: center;
 		gap: 0.5rem;
 		padding: 0.75rem 1rem;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
 		color: white;
 		border: none;
 		border-radius: 50px;
 		cursor: pointer;
 		font-size: 0.875rem;
 		font-weight: 600;
-		box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+		box-shadow: 0 4px 20px rgba(74, 144, 226, 0.4);
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		z-index: 1000;
 	}
 
 	.import-button-float:hover {
 		transform: translateY(-2px);
-		box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+		box-shadow: 0 6px 25px rgba(74, 144, 226, 0.5);
 	}
 
 	.import-button-float:active {

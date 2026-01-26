@@ -119,18 +119,18 @@
 		justify-content: center;
 		width: 44px;
 		height: 44px;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
 		color: white;
 		border: none;
 		border-radius: 50%;
 		cursor: pointer;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+		box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
 	}
 
 	.play-button:hover {
 		transform: scale(1.1);
-		box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+		box-shadow: 0 6px 16px rgba(74, 144, 226, 0.4);
 	}
 
 	.play-button:active {

@@ -130,7 +130,7 @@ export function importRecording(jsonData: string): {
 			message: `Successfully imported "${newRecording.name}"`,
 			recording: newRecording
 		};
-	} catch (e) {
+	} catch {
 		return {
 			success: false,
 			message: 'Invalid JSON format. Please check your file.'
